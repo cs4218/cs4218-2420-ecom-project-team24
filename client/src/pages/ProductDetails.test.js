@@ -225,7 +225,6 @@ describe('ProductDetails - Related products', () => {
             axios.get.mockImplementation((url) => mockErrorResponse(url));
             expect(axios.get)
                 .toHaveBeenCalledWith(`/api/v1/product/related-product/${mockProduct._id}/${mockProduct.category._id}`);
-            // expect(console.log).toHaveBeenCalledWith(new Error('Error retrieving selected product'));
             expect(console.log).toHaveBeenCalledWith(new Error('Error retrieving related products'));
         }); 
     })
