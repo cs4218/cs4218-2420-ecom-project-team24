@@ -81,15 +81,15 @@ const mockResponse = (
     }
 };
 
-const mockErrorResponse = () => {
+const mockErrorResponse = (url) => {
     if (url == '/api/v1/category/get-category') {
         return Promise.reject(new Error('Error retrieving categories'));
     } else if (url == '/api/v1/product/product-list/1') {
-        return Promise.resolve(new Error('Error retrieving product list page 1'));
+        return Promise.reject(new Error('Error retrieving product list page 1'));
     } else if (url == '/api/v1/product/product-list/2') {
-        return Promise.resolve(new Error('Error retrieving product list page 2'));
+        return Promise.reject(new Error('Error retrieving product list page 2'));
     } else if (url == '/api/v1/product/product-count') {
-        return Promise.resolve({ data: { total } });
+        return Promise.reject(new Error('Error retrieving product count'));
     } else {
         return null
     }
@@ -370,64 +370,43 @@ describe('HomePage - with 7 or more products', () => {
 });
 
 describe('HomePage - Error handling tests', () => {
-    
-    it('should retrieve categories', async () => {
-        renderHomePage();
 
+    beforeEach(() => {
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+    })
+
+    afterEach(() => {
+        console.log.mockRestore();
+        jest.clearAllMocks();
+    })
+    
+    it('should handle errors when api calls fail upon initial render', async () => {
+        axios.get.mockImplementation((url) => mockErrorResponse(url));
+        renderHomePage();
         await waitFor(() => {
             expect(axios.get).toHaveBeenCalledWith('/api/v1/category/get-category');
+            expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-list/1');
+            expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-count');
+            expect(console.log).toHaveBeenCalledWith(new Error('Error retrieving categories'));
+            expect(console.log).toHaveBeenCalledWith(new Error('Error retrieving product list page 1'));
+            expect(console.log).toHaveBeenCalledWith(new Error('Error retrieving product count'));
         });        
-      });
-
-    it('should display categories correctly', async () => {
-        axios.get.mockImplementation((url) => mockResponse(url, mockCategories, [], [], 0));
-
-        renderHomePage();
-
-        await waitFor(() => {
-            const categoryCheckboxes = screen.getAllByRole('checkbox');
-            expect(categoryCheckboxes).toHaveLength(2);
-            
-            const checkbox1 = screen.getByText('mockCategory1');
-            const checkbox2 = screen.getByText('mockCategory2');
-            expect(checkbox1).toBeInTheDocument();
-            expect(checkbox2).toBeInTheDocument();
-        });
-      });
-
-    it('should be able to filter products by selected category', async () => {
-        const sixProducts = generateMockProducts(6);
-        axios.get.mockImplementation((url) => mockResponse(url, mockCategories, sixProducts, [], sixProducts.length));
-
-        renderHomePage();
-        const category1Checkbox = screen.findByText('mockCategory1')
-        expect(await category1Checkbox).toBeInTheDocument();
-        fireEvent.click(screen.getByText('mockCategory1'));
-
-        await waitFor(() => {
-            sixProducts
-                .filter(product => product.category == 1)
-                .forEach(product => {
-                    expect(screen.getByText(product.name)).toBeInTheDocument();
-                })
-        });
     });
 
-    it('should be able to unfilter products by unselecting category', async () => {
-        const sixProducts = generateMockProducts(6);
-        axios.get.mockImplementation((url) => mockResponse(url, mockCategories, sixProducts, [], sixProducts.length));
-
+    it('should handle errors when api call fails upon retrieving additional products', async () => {
+        const eightProducts = generateMockProducts(8);
+        axios.get.mockImplementation((url) => 
+            mockResponse(url, mockCategories, eightProducts.slice(0,6), eightProducts.slice(6,8), eightProducts.length));
         renderHomePage();
-        const category1Checkbox = screen.findByText('mockCategory1')
-        expect(await category1Checkbox).toBeInTheDocument();
-        fireEvent.click(screen.getByText('mockCategory1'));
-        fireEvent.click(screen.getByText('mockCategory1'));
+        
+        axios.get.mockImplementation((url) => mockErrorResponse(url)); 
+        await screen.findByText("Loadmore");
+        fireEvent.click(screen.getByText("Loadmore"));
+        
         await waitFor(() => {
-            sixProducts
-                .forEach(product => {
-                    expect(screen.getByText(product.name)).toBeInTheDocument();
-                })
-        });
+            expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-list/2');
+            expect(console.log).toHaveBeenCalledWith(new Error('Error retrieving product list page 2'));
+        });      
     });
 
 });
