@@ -106,8 +106,17 @@ const renderHomePage = () => {
 };
 
 beforeEach(() => {
-    jest.clearAllMocks();
+    axios.get.mockImplementation((url) => mockResponse(url, mockCategories, [], [], 0));
+    axios.post.mockResolvedValue({
+        data: {
+            products: [],
+        }
+    });
 });
+
+afterEach(() => {
+    jest.clearAllMocks();
+})
 
 describe('HomePage - Category related tests', () => {
     
@@ -189,11 +198,11 @@ describe('HomePage - Price related tests', () => {
                 product.price >= priceArray[0] && product.price <= priceArray[1]
             );
         }
-        axios.post.mockResolvedValue({
+        return Promise.resolve({
             data: {
                 products: filteredProducts
             }
-        });
+        })
     }
 
     beforeEach(() => {
@@ -214,7 +223,7 @@ describe('HomePage - Price related tests', () => {
         renderHomePage();
 
         for (const price of Prices) {
-            mockPriceFilter(sixProducts, price.array);
+            axios.post.mockImplementation(() => mockPriceFilter(sixProducts, price.array));
 
             const filteredProducts = sixProducts.filter((product) => 
                 product.price >= price.array[0] && product.price <= price.array[1]
@@ -235,7 +244,7 @@ describe('HomePage - Price related tests', () => {
         };
     });
 
-    it('should display all products after resetting filters', async () => {
+    it('should reload page after resetting filters', async () => {
         renderHomePage();
 
         axios.post.mockImplementationOnce(() => mockPriceFilter(sixProducts, Prices[0].array));
@@ -246,12 +255,9 @@ describe('HomePage - Price related tests', () => {
             expect(foundProducts.length).toBeLessThan(sixProducts.length);
         });
 
-        axios.post.mockImplementationOnce(() => mockPriceFilter(sixProducts, [])); 
-
         fireEvent.click(screen.getByText('RESET FILTERS'));
         await waitFor(() => {
-            const foundProducts = screen.queryAllByText(priceRegex);
-            expect(foundProducts.length).toEqual(sixProducts.length);
+            expect(global.location.reload).toHaveBeenCalled();
         });
       });
 
@@ -407,6 +413,23 @@ describe('HomePage - Error handling tests', () => {
             expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-list/2');
             expect(console.log).toHaveBeenCalledWith(new Error('Error retrieving product list page 2'));
         });      
+    });
+
+    it('should handle errors when api call fails to filter products', async () => {
+        axios.post.mockImplementation(() => Promise.reject(new Error('Error filtering products')));
+
+        renderHomePage();
+
+        fireEvent.click(screen.getByText(Prices[0].name));
+        await waitFor(() => {
+            expect(axios.post).toHaveBeenCalledWith('/api/v1/product/product-filters',
+                {
+                    checked: [],
+                    radio: Prices[0].array,
+                }
+            );
+            expect(console.log).toHaveBeenCalledWith(new Error('Error filtering products'));
+        });
     });
 
 });
