@@ -77,7 +77,7 @@ const mockResponse = (
     } else if (url == '/api/v1/product/product-count') {
         return Promise.resolve({ data: { total } });
     } else {
-        return null
+        return null;
     }
 };
 
