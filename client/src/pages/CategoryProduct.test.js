@@ -106,7 +106,7 @@ describe("CategoryProduct Component", () => {
     });
 
     // TEST #3
-    it("handles navigation correctly", async () => {
+    it("handles More Details button correctly", async () => {
         renderWithRouter(<CategoryProduct />);
         
         const moreDetailsButtons = await screen.findAllByText("More Details");
