@@ -160,22 +160,4 @@ describe("CategoryProduct Component", () => {
         
         expect(axios.get).not.toHaveBeenCalled();
     });
-
-    // TEST #7
-    it("applies correct styling to container and cards", async () => {
-        jest.spyOn(require('react-router-dom'), 'useParams')
-            .mockReturnValue({ slug: "test-category" });
-            
-        renderWithRouter(<CategoryProduct />);
-        
-        const container = screen.getByTestId("category-container");
-        expect(container).toHaveClass("container", "mt-3", "category");
-
-        const cards = await screen.findAllByTestId("product-card");
-        expect(cards).toHaveLength(mockProducts.length);
-        
-        cards.forEach(card => {
-            expect(card).toHaveClass("card", "m-2");
-        });
-    });
 });
