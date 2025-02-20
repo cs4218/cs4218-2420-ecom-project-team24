@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/extend-expect";
 import { BrowserRouter } from "react-router-dom";
 import Categories from "./Categories";
 
-// Mock the Layout component
+// Mocks
 jest.mock("./../components/Layout", () => {
     const PropTypes = require('prop-types');
     const MockLayout = ({ children, title }) => {
@@ -19,7 +19,6 @@ jest.mock("./../components/Layout", () => {
     return MockLayout;
 });
 
-// Mock the useCategory hook
 jest.mock("../hooks/useCategory", () => {
     return jest.fn(() => [
         { _id: "1", name: "Electronics", slug: "electronics" },

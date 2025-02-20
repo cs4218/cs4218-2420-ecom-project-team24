@@ -6,10 +6,9 @@ import CategoryProduct from "./CategoryProduct";
 import axios from "axios";
 import userEvent from "@testing-library/user-event";
 
-// Mock axios
+// Mocks
 jest.mock("axios");
 
-// Mock react-router-dom hooks
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
@@ -17,7 +16,6 @@ jest.mock("react-router-dom", () => ({
     useNavigate: () => mockNavigate,
 }));
 
-// Mock the Layout component
 jest.mock("./../components/Layout", () => {
     return ({ children }) => <div data-testid="mock-layout">{children}</div>;
 });
@@ -32,7 +30,6 @@ window.matchMedia =
         };
     };
 
-// Mock data
 const mockProducts = [
     {
         _id: "1",
@@ -152,19 +149,33 @@ describe("CategoryProduct Component", () => {
     });
 
     // TEST #6
+    it("does not make API call when slug is undefined", async () => {
+        // Override the mock to return undefined slug
+        jest.spyOn(require('react-router-dom'), 'useParams').mockReturnValue({ slug: undefined });
+        
+        renderWithRouter(<CategoryProduct />);
+        
+        // Wait for API calls
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    // TEST #7
     it("applies correct styling to container and cards", async () => {
+        jest.spyOn(require('react-router-dom'), 'useParams')
+            .mockReturnValue({ slug: "test-category" });
+            
         renderWithRouter(<CategoryProduct />);
         
         const container = screen.getByTestId("category-container");
         expect(container).toHaveClass("container", "mt-3", "category");
+
+        const cards = await screen.findAllByTestId("product-card");
+        expect(cards).toHaveLength(mockProducts.length);
         
-        // Wait for products to load
-        await waitFor(() => {
-            const cards = screen.getAllByTestId("product-card");
-            expect(cards).toHaveLength(mockProducts.length);
-            cards.forEach(card => {
-                expect(card).toHaveClass("card", "m-2");
-            });
+        cards.forEach(card => {
+            expect(card).toHaveClass("card", "m-2");
         });
     });
 });
