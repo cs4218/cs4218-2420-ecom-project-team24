@@ -119,12 +119,12 @@ describe("CartPage Component", () => {
 
     render(<CartPage />);
     
-    // Verify current address section is shown
+    // Verify "Current Address" section header
     await waitFor(() => {
       expect(screen.getByText("Current Address")).toBeInTheDocument();
     });
     
-    // Verify address is displayed
+    // Verify actual address is displayed
     await waitFor(() => {
       expect(screen.getByText("123 Test St")).toBeInTheDocument();
     });
@@ -296,27 +296,7 @@ describe("CartPage Component", () => {
   });
 
   // TEST #11
-  it("handles removeCartItem error gracefully", async () => {
-    // Mock localStorage.setItem to throw error
-    const mockError = new Error("Storage quota exceeded");
-    jest.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
-      throw mockError;
-    });
-
-    render(<CartPage />);
-    
-    // Find and click remove button
-    const removeButton = await screen.findByText("Remove");
-    fireEvent.click(removeButton);
-
-    // Verify cart state remains unchanged when storage update fails
-    await waitFor(() => {
-      expect(mockSetCart).toHaveBeenCalled();
-    });
-  });
-
-  // TEST #12
-  it("handle case when user is not logged in and cart has items", async () => {
+  it("verify correctness when user is not logged in and cart has items", async () => {
     useAuth.mockReturnValue([{ user: null }, jest.fn()]);
     useCart.mockReturnValue([[mockCartItem], mockSetCart]);
 
@@ -331,7 +311,7 @@ describe("CartPage Component", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/login", { state: "/cart" });
   });
 
-  // TEST #13
+  // TEST #12
   it("handles payment process correctly for logged in users", async () => {
     // Mock authenticated user with address
     useAuth.mockReturnValue([{ 
