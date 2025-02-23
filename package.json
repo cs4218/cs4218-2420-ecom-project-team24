@@ -56,7 +56,7 @@
       "\\.(css|scss)$": "identity-obj-proxy"
     },
     "transformIgnorePatterns": [
-      "/node_modules/(?!(styleMock\\.js)$)"
+      "/node_modules/(?!(styleMock\\.js|react-icons|@react-icons))"
     ]
   }
 }
