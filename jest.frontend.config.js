@@ -22,16 +22,17 @@ export default {
 
   // only run these tests
   testMatch: [
-    "<rootDir>/client/src/pages/**/*.test.js", 
-    "<rootDir>/client/src/pages/*.test.js"],
+    "<rootDir>/client/src/**/*.test.js"
+  ],
 
   // jest code coverage
   collectCoverage: true,
   collectCoverageFrom: [
-    "client/src/pages/**/*.js",
-    "client/src/pages/**/**/*.js",
-    "!client/src/pages/**/**/*.test.js",
-    "!client/src/pages/**/*.test.js"
+    "client/src/**/*.js",
+    "!client/src/**/*.test.js",
+    "!client/src/index.js",
+    "!client/src/reportWebVitals.js",
+    "!client/src/setupTests.js"
   ],
   coverageThreshold: {
     global: {
