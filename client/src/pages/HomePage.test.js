@@ -12,6 +12,7 @@ import { Prices } from "../components/Prices";
 // Mocking axios.post
 jest.mock('axios');
 jest.mock('react-hot-toast');
+jest.mock('react-icons/ai');
 
 jest.mock('../context/auth', () => ({
     useAuth: jest.fn(() => [null, jest.fn()]) // Mock useAuth hook to return null state and a mock function for setAuth
@@ -183,7 +184,7 @@ describe('HomePage - Category related tests', () => {
 
 
 describe('HomePage - Price related tests', () => {
-    const priceRegex = /\$.+\.../
+    const priceRegex = new RegExp("\\$.+\\...");
     const sixProducts = generateMockProducts(6);
 
     const mockPriceFilter = (
