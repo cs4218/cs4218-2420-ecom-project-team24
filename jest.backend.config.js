@@ -7,7 +7,7 @@ export default {
   testEnvironment: 'node',
 
   // setup files to run before tests
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFiles: ['<rootDir>/jest.setup.js'],
 
   // which test to run
   testMatch: ['<rootDir>/controllers/*.test.js', '<rootDir>/models/*.test.js'],
