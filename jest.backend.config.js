@@ -3,11 +3,8 @@ export default {
   // display name
   displayName: 'backend',
 
-  // when testing backend
-  testEnvironment: 'jest-environment-jsdom',
-
   // setup files to run before tests
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/setup.jest.js'],
 
   // which test to run
   testMatch: ['<rootDir>/controllers/*.test.js', '<rootDir>/models/*.test.js'],
