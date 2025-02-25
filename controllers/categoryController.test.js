@@ -1,4 +1,9 @@
 import { jest } from '@jest/globals'
+import { TextEncoder, TextDecoder } from 'util'
+
+// Polyfill for TextEncoder/TextDecoder which is required by Mongoose
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder
 
 import * as categoryController from './categoryController.js'
 import categoryModel from '../models/categoryModel.js'
