@@ -30,8 +30,27 @@ jest.mock('slugify', () =>
 // })
 
 describe('Category Controller Tests', () => {
-  it('should pass a simple test', () => {
-    expect(true).toBe(true)
+  let req, res
+
+  beforeEach(() => {
+    // Reset all mocks, clean req and res for each test
+    jest.clearAllMocks()
+    req = {
+      body: { name: 'Electronics' },
+      params: { id: 'category123', slug: 'electronics' }
+    }
+    res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+      json: jest.fn()
+    }
+  })
+
+  test('should return error when name is missing', async () => {
+    req.body.name = ''
+    await createCategoryController(req, res)
+    expect(res.status).toHaveBeenCalledWith(401)
+    expect(res.send).toHaveBeenCalledWith({ message: 'Name is required' })
   })
   //   let req, res
   //   // Cleanup after all tests
