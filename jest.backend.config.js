@@ -3,7 +3,9 @@ export default {
   displayName: 'backend',
 
   testEnvironment: 'jest-environment-jsdom',
-  transform: {},
+  transform: {
+    '^.+\\.jsx?$': 'babel-jest'
+  },
   moduleNameMapper: {
     '\\.(css|scss)$': 'identity-obj-proxy'
   },
