@@ -1,43 +1,45 @@
-// import Category from './categoryModel.js'
+import Category from './categoryModel.js'
+
+jest.mock('../models/categoryModel.js')
 
 describe('Category Model Test', () => {
   // Add a simple test to make the suite pass
   it('should pass a simple test', () => {
     expect(true).toBe(true)
   })
-  // Test schema definition
-  //   describe('Schema Definition', () => {
-  //     // TEST #1
-  //     it('should have the correct fields', () => {
-  //       const fields = Object.keys(Category.schema.paths)
-  //       expect(fields).toContain('name')
-  //       expect(fields).toContain('slug')
-  //       expect(fields).toContain('_id')
-  //       expect(fields).toContain('__v') // Mongoose version key
-  //       expect(fields).toHaveLength(4) // _id, name, slug, __v
-  //     })
-  //     // TEST #2
-  //     it('should enforce correct field types', () => {
-  //       expect(Category.schema.paths.name.instance).toBe('String')
-  //       expect(Category.schema.paths.slug.instance).toBe('String')
-  //     })
-  //     // TEST #3
-  //     it('should convert slug to lowercase', async () => {
-  //       const category = new Category({
-  //         name: 'Test Category',
-  //         slug: 'TEST-CATEGORY'
-  //       })
-  //       expect(category.slug).toBe('test-category')
-  //     })
-  //     // TEST #4
-  //     it('should handle special characters in slug', async () => {
-  //       const category = new Category({
-  //         name: 'Test & Category',
-  //         slug: 'TEST & CATEGORY'
-  //       })
-  //       expect(category.slug).toBe('test & category')
-  //     })
-  //   })
+  //Test schema definition
+  describe('Schema Definition', () => {
+    // TEST #1
+    it('should have the correct fields', () => {
+      const fields = Object.keys(Category.schema.paths)
+      expect(fields).toContain('name')
+      expect(fields).toContain('slug')
+      expect(fields).toContain('_id')
+      expect(fields).toContain('__v') // Mongoose version key
+      expect(fields).toHaveLength(4) // _id, name, slug, __v
+    })
+    // TEST #2
+    it('should enforce correct field types', () => {
+      expect(Category.schema.paths.name.instance).toBe('String')
+      expect(Category.schema.paths.slug.instance).toBe('String')
+    })
+    // TEST #3
+    it('should convert slug to lowercase', async () => {
+      const category = new Category({
+        name: 'Test Category',
+        slug: 'TEST-CATEGORY'
+      })
+      expect(category.slug).toBe('test-category')
+    })
+    // TEST #4
+    it('should handle special characters in slug', async () => {
+      const category = new Category({
+        name: 'Test & Category',
+        slug: 'TEST & CATEGORY'
+      })
+      expect(category.slug).toBe('test & category')
+    })
+  })
   //   // Test model validation
   //   describe('Model Validation', () => {
   //     // TEST #1
