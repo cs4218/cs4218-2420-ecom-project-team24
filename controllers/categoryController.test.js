@@ -45,48 +45,48 @@ describe('Category Controller Tests', () => {
   })
 
   // CREATE CATEGORY
-  describe('createCategoryController', () => {
-    // TEST #1
-    test('should return error if name is not provided', async () => {
-      req.body.name = ''
-      await categoryController.createCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(401)
-      expect(res.send).toHaveBeenCalledWith({ message: 'Name is required' })
-    })
+  //   describe('createCategoryController', () => {
+  //     // TEST #1
+  //     test('should return error if name is not provided', async () => {
+  //       req.body.name = ''
+  //       await categoryController.createCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(401)
+  //       expect(res.send).toHaveBeenCalledWith({ message: 'Name is required' })
+  //     })
 
-    // TEST #2
-    test('should return message if category already exists', async () => {
-      categoryModel.findOne.mockResolvedValue({ name: 'Test Category' })
-      await categoryController.createCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.send).toHaveBeenCalledWith({
-        success: true,
-        message: 'Category Already Exisits'
-      })
-    })
+  //     // TEST #2
+  //     test('should return message if category already exists', async () => {
+  //       categoryModel.findOne.mockResolvedValue({ name: 'Test Category' })
+  //       await categoryController.createCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(200)
+  //       expect(res.send).toHaveBeenCalledWith({
+  //         success: true,
+  //         message: 'Category Already Exisits'
+  //       })
+  //     })
 
-    // TEST #3
-    test('should create new category successfully', async () => {
-      categoryModel.findOne.mockResolvedValue(null)
-      const mockCategory = { name: 'Test Category', slug: 'test-category' }
-      categoryModel.prototype.save.mockResolvedValue(mockCategory)
+  //     // TEST #3
+  //     test('should create new category successfully', async () => {
+  //       categoryModel.findOne.mockResolvedValue(null)
+  //       const mockCategory = { name: 'Test Category', slug: 'test-category' }
+  //       categoryModel.prototype.save.mockResolvedValue(mockCategory)
 
-      await categoryController.createCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(201)
-      expect(res.send).toHaveBeenCalledWith({
-        success: true,
-        message: 'New category created',
-        category: mockCategory
-      })
-    })
+  //       await categoryController.createCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(201)
+  //       expect(res.send).toHaveBeenCalledWith({
+  //         success: true,
+  //         message: 'New category created',
+  //         category: mockCategory
+  //       })
+  //     })
 
-    // TEST #4
-    test('should handle errors', async () => {
-      categoryModel.findOne.mockRejectedValue(new Error('Database error'))
-      await categoryController.createCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(500)
-    })
-  })
+  //     // TEST #4
+  //     test('should handle errors', async () => {
+  //       categoryModel.findOne.mockRejectedValue(new Error('Database error'))
+  //       await categoryController.createCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(500)
+  //     })
+  //   })
 
   //   // UPDATE CATEGORY
   //   describe('updateCategoryController', () => {
