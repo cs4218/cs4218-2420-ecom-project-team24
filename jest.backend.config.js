@@ -1,20 +1,22 @@
 export default {
+  testEnvironment: 'jest-environment-jsdom',
+  transform: {},
   // display name
-  displayName: "backend",
+  displayName: 'backend',
 
   // when testing backend
-  testEnvironment: "node",
+  testEnvironment: 'node',
 
   // which test to run
-  testMatch: ["<rootDir>/controllers/*.test.js"],
+  testMatch: ['<rootDir>/controllers/*.test.js'],
 
   // jest code coverage
   collectCoverage: true,
-  collectCoverageFrom: ["controllers/**"],
+  collectCoverageFrom: ['controllers/**'],
   coverageThreshold: {
     global: {
       lines: 100,
-      functions: 100,
-    },
-  },
-};
+      functions: 100
+    }
+  }
+}
