@@ -138,7 +138,7 @@ describe('createProductController tests', () => {
         });
 
         it('should raise error if photo size is too big', async () => {
-            req.files.photo.size = 20000000;
+            req.files.photo.size = 1000001;
             await createProductController(req, res);
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledWith({ error: "photo is Required and should be less then 1mb" });
