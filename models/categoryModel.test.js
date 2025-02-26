@@ -1,9 +1,3 @@
-import { TextEncoder, TextDecoder } from 'util'
-
-// Polyfill for TextEncoder/TextDecoder which is required by Mongoose
-global.TextEncoder = TextEncoder
-global.TextDecoder = TextDecoder
-
 import Category from './categoryModel.js'
 
 describe('Category Model Test', () => {
