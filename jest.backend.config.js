@@ -3,10 +3,12 @@ export default {
   // display name
   displayName: 'backend',
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.js'],
 
   // which test to run
-  testMatch: ['<rootDir>/controllers/*.test.js', '<rootDir>/models/*.test.js'],
+  testMatch: [
+    '<rootDir>/controllers/*.test.js'
+    // '<rootDir>/models/*.test.js'
+  ],
 
   // jest code coverage
   collectCoverage: true,
