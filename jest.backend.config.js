@@ -1,11 +1,13 @@
 export default {
-  testEnvironment: 'jest-environment-jsdom',
-  transform: {},
   // display name
   displayName: 'backend',
 
-  // when testing backend
-  testEnvironment: 'node',
+  testEnvironment: 'jest-environment-jsdom',
+  transform: {},
+  moduleNameMapper: {
+    '\\.(css|scss)$': 'identity-obj-proxy'
+  },
+  transformIgnorePatterns: ['/node_modules/(?!(styleMock\\.js)$)'],
 
   // which test to run
   testMatch: ['<rootDir>/controllers/*.test.js'],
