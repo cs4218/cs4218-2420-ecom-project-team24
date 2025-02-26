@@ -72,6 +72,7 @@ describe('Category Model Test', () => {
       expect(err).toBeUndefined()
     })
   })
+
   // Test model methods and properties
   describe('Model Methods and Properties', () => {
     // TEST #1
