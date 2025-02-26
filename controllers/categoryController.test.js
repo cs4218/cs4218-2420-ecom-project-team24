@@ -1,8 +1,18 @@
 import { jest } from '@jest/globals'
-import * as categoryController from './categoryController.js'
-import categoryModel from '../models/categoryModel.js'
+import {
+  createCategoryController,
+  updateCategoryController,
+  categoryControlller,
+  singleCategoryController,
+  deleteCategoryCOntroller
+} from './categoryController'
+import categoryModel from '../models/categoryModel'
+import slugify from 'slugify'
 
-jest.mock('../models/categoryModel.js')
+jest.mock('../models/categoryModel.js') // Mock all categoryModel functions and properties
+jest.mock('slugify', () =>
+  jest.fn(name => name.toLowerCase().replace(/\s+/g, '-'))
+) // Mock slugify function
 
 // Mock all the model methods
 // jest
