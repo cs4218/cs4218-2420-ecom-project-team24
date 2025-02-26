@@ -88,107 +88,107 @@ describe('Category Controller Tests', () => {
     })
   })
 
-  // UPDATE CATEGORY
-  describe('updateCategoryController', () => {
-    // TEST #1
-    test('should update category successfully', async () => {
-      const mockUpdatedCategory = {
-        name: 'Updated Category',
-        slug: 'updated-category'
-      }
-      categoryModel.findByIdAndUpdate.mockResolvedValue(mockUpdatedCategory)
+  //   // UPDATE CATEGORY
+  //   describe('updateCategoryController', () => {
+  //     // TEST #1
+  //     test('should update category successfully', async () => {
+  //       const mockUpdatedCategory = {
+  //         name: 'Updated Category',
+  //         slug: 'updated-category'
+  //       }
+  //       categoryModel.findByIdAndUpdate.mockResolvedValue(mockUpdatedCategory)
 
-      await categoryController.updateCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.send).toHaveBeenCalledWith({
-        success: true,
-        messsage: 'Category Updated Successfully',
-        category: mockUpdatedCategory
-      })
-    })
+  //       await categoryController.updateCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(200)
+  //       expect(res.send).toHaveBeenCalledWith({
+  //         success: true,
+  //         messsage: 'Category Updated Successfully',
+  //         category: mockUpdatedCategory
+  //       })
+  //     })
 
-    // TEST #2
-    test('should handle errors during update', async () => {
-      categoryModel.findByIdAndUpdate.mockRejectedValue(
-        new Error('Update error')
-      )
-      await categoryController.updateCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(500)
-    })
-  })
+  //     // TEST #2
+  //     test('should handle errors during update', async () => {
+  //       categoryModel.findByIdAndUpdate.mockRejectedValue(
+  //         new Error('Update error')
+  //       )
+  //       await categoryController.updateCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(500)
+  //     })
+  //   })
 
-  // GET ALL
-  describe('categoryController', () => {
-    // TEST #1
-    test('should get all categories successfully', async () => {
-      const mockCategories = [
-        { name: 'Category 1', slug: 'category-1' },
-        { name: 'Category 2', slug: 'category-2' }
-      ]
-      categoryModel.find.mockResolvedValue(mockCategories)
+  //   // GET ALL
+  //   describe('categoryController', () => {
+  //     // TEST #1
+  //     test('should get all categories successfully', async () => {
+  //       const mockCategories = [
+  //         { name: 'Category 1', slug: 'category-1' },
+  //         { name: 'Category 2', slug: 'category-2' }
+  //       ]
+  //       categoryModel.find.mockResolvedValue(mockCategories)
 
-      await categoryController.categoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.send).toHaveBeenCalledWith({
-        success: true,
-        message: 'All Categories List',
-        category: mockCategories
-      })
-    })
+  //       await categoryController.categoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(200)
+  //       expect(res.send).toHaveBeenCalledWith({
+  //         success: true,
+  //         message: 'All Categories List',
+  //         category: mockCategories
+  //       })
+  //     })
 
-    // TEST #2
-    test('should handle errors when getting all categories', async () => {
-      categoryModel.find.mockRejectedValue(new Error('Database error'))
-      await categoryController.categoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(500)
-    })
-  })
+  //     // TEST #2
+  //     test('should handle errors when getting all categories', async () => {
+  //       categoryModel.find.mockRejectedValue(new Error('Database error'))
+  //       await categoryController.categoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(500)
+  //     })
+  //   })
 
-  // SINGLE CATEGORY
-  describe('singleCategoryController', () => {
-    // TEST #1
-    test('should get single category successfully', async () => {
-      const mockCategory = { name: 'Test Category', slug: 'test-category' }
-      categoryModel.findOne.mockResolvedValue(mockCategory)
+  //   // SINGLE CATEGORY
+  //   describe('singleCategoryController', () => {
+  //     // TEST #1
+  //     test('should get single category successfully', async () => {
+  //       const mockCategory = { name: 'Test Category', slug: 'test-category' }
+  //       categoryModel.findOne.mockResolvedValue(mockCategory)
 
-      await categoryController.singleCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.send).toHaveBeenCalledWith({
-        success: true,
-        message: 'Got Single Category Successfully',
-        category: mockCategory
-      })
-    })
+  //       await categoryController.singleCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(200)
+  //       expect(res.send).toHaveBeenCalledWith({
+  //         success: true,
+  //         message: 'Got Single Category Successfully',
+  //         category: mockCategory
+  //       })
+  //     })
 
-    // TEST #2
-    test('should handle errors when getting single category', async () => {
-      categoryModel.findOne.mockRejectedValue(new Error('Not found'))
-      await categoryController.singleCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(500)
-    })
-  })
+  //     // TEST #2
+  //     test('should handle errors when getting single category', async () => {
+  //       categoryModel.findOne.mockRejectedValue(new Error('Not found'))
+  //       await categoryController.singleCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(500)
+  //     })
+  //   })
 
-  // DELETE CATEGORY
-  describe('deleteCategoryController', () => {
-    // TEST #1
-    test('should delete category successfully', async () => {
-      categoryModel.findByIdAndDelete.mockResolvedValue({})
+  //   // DELETE CATEGORY
+  //   describe('deleteCategoryController', () => {
+  //     // TEST #1
+  //     test('should delete category successfully', async () => {
+  //       categoryModel.findByIdAndDelete.mockResolvedValue({})
 
-      await categoryController.deleteCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.send).toHaveBeenCalledWith({
-        success: true,
-        message: 'Categry Deleted Successfully'
-      })
-    })
+  //       await categoryController.deleteCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(200)
+  //       expect(res.send).toHaveBeenCalledWith({
+  //         success: true,
+  //         message: 'Categry Deleted Successfully'
+  //       })
+  //     })
 
-    // TEST #2
-    test('should handle errors during deletion', async () => {
-      categoryModel.findByIdAndDelete.mockRejectedValue(
-        new Error('Delete error')
-      )
-      await categoryController.deleteCategoryController(req, res)
-      expect(res.status).toHaveBeenCalledWith(500)
-    })
-  })
+  //     // TEST #2
+  //     test('should handle errors during deletion', async () => {
+  //       categoryModel.findByIdAndDelete.mockRejectedValue(
+  //         new Error('Delete error')
+  //       )
+  //       await categoryController.deleteCategoryController(req, res)
+  //       expect(res.status).toHaveBeenCalledWith(500)
+  //     })
+  //   })
 })

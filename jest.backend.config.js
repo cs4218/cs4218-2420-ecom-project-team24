@@ -2,6 +2,7 @@ export default {
   transform: {},
   // display name
   displayName: 'backend',
+  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.js'],
 
   // which test to run
   testMatch: ['<rootDir>/controllers/*.test.js', '<rootDir>/models/*.test.js'],
