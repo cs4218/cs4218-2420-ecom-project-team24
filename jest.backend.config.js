@@ -2,6 +2,7 @@ export default {
   transform: {},
   // display name
   displayName: 'backend',
+  testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/tests/setupTests.js'],
 
   // which test to run
