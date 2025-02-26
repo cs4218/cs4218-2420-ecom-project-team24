@@ -2,9 +2,9 @@ import { jest } from '@jest/globals'
 import {
   createCategoryController,
   updateCategoryController,
-  categoryController,
+  categoryControlller,
   singleCategoryController,
-  deleteCategoryController
+  deleteCategoryCOntroller
 } from './categoryController'
 import categoryModel from '../models/categoryModel'
 import slugify from 'slugify'

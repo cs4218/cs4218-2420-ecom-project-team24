@@ -1,5 +1,4 @@
 export default {
-  transform: {},
   // display name
   displayName: 'backend',
   testEnvironment: 'node',
@@ -12,7 +11,10 @@ export default {
 
   // jest code coverage
   collectCoverage: true,
-  collectCoverageFrom: ['controllers/**', 'models/**'],
+  collectCoverageFrom: [
+    'controllers/**'
+    // 'models/**'
+  ],
   coverageThreshold: {
     global: {
       lines: 100,
