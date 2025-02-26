@@ -1,3 +1,7 @@
+import { TextDecoder, TextEncoder } from 'util'
+
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder
 import Category from './categoryModel.js'
 
 describe('Category Model Test', () => {
