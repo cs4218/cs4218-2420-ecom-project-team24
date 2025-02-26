@@ -134,4 +134,169 @@ describe("AdminOrders component", () => {
       expect(axios.get).toHaveBeenCalled();
     });
   });
+
+  // Code adapted from https://chatgpt.com/share/67bf46f9-e51c-8013-bf41-a53915c900f5
+  test("render AdminOrders component with no orders", async () => {
+    useAuth.mockReturnValue([{ token: "test-token" }, jest.fn()]);
+    axios.get.mockResolvedValue({ data: [] });
+
+    render(
+      <MemoryRouter>
+        <AdminOrders />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("All Orders")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Ron")).not.toBeInTheDocument();
+    expect(screen.getByText("No orders found")).toBeInTheDocument();
+  });
+
+  // Code adapted from https://chatgpt.com/share/67bf46f9-e51c-8013-bf41-a53915c900f5
+  test("displays error when order status update fails", async () => {
+    jest.spyOn(console, "log").mockImplementation(() => {});
+    axios.get.mockResolvedValue({ data: mockOrders });
+    axios.put.mockRejectedValue(new Error("Failed to update"));
+
+    render(
+      <MemoryRouter>
+        <AdminOrders />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Ron")).toBeInTheDocument();
+
+    const select = screen.getByRole("combobox");
+    fireEvent.mouseDown(select);
+
+    let newStatus;
+    await waitFor(() => {
+      newStatus = screen.getByText("Processing");
+    });
+    fireEvent.click(newStatus);
+
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/order-status/1", {
+        status: "Processing",
+      });
+    });
+
+    await waitFor(() => {
+      expect(console.log).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    console.log.mockRestore();
+  });
+
+  // Code adapted from https://chatgpt.com/share/67bf46f9-e51c-8013-bf41-a53915c900f5
+  test("does not fetch orders when auth token is missing", async () => {
+    useAuth.mockReturnValue([null, jest.fn()]);
+    axios.get.mockResolvedValue({ data: mockOrders });
+
+    render(
+      <MemoryRouter>
+        <AdminOrders />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).not.toHaveBeenCalled();
+    });
+  });
+
+  // Code adapted from https://chatgpt.com/share/67bf46f9-e51c-8013-bf41-a53915c900f5
+  test("handles all status options correctly", async () => {
+    axios.get.mockResolvedValue({ data: mockOrders });
+    axios.put.mockResolvedValue({ data: { success: true } });
+
+    render(
+      <MemoryRouter>
+        <AdminOrders />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Ron")).toBeInTheDocument();
+
+    const select = screen.getByRole("combobox");
+    fireEvent.mouseDown(select);
+
+    for (const status of ["Processing", "Shipped", "deliverd", "cancel"]) {
+      let option;
+      await waitFor(() => {
+        option = screen.getByText(status);
+      });
+      fireEvent.click(option);
+
+      await waitFor(() => {
+        expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/order-status/1", {
+          status,
+        });
+      });
+    }
+  });
+
+  // Code adapted from https://chatgpt.com/share/67bf46f9-e51c-8013-bf41-a53915c900f5
+  test("calls handleChange when order status is changed", async () => {
+    axios.get.mockResolvedValue({ data: mockOrders });
+    axios.put.mockResolvedValue({ data: { success: true } });
+
+    render(
+      <MemoryRouter>
+        <AdminOrders />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Ron")).toBeInTheDocument();
+
+    const select = screen.getByRole("combobox");
+    fireEvent.mouseDown(select);
+
+    let newStatus;
+    await waitFor(() => {
+      newStatus = screen.getByText("Processing");
+    });
+
+    fireEvent.click(newStatus);
+
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/order-status/1", {
+        status: "Processing",
+      });
+    });
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  // Code adapted from https://chatgpt.com/share/67bf46f9-e51c-8013-bf41-a53915c900f5
+  test("does not call API when status remains unchanged", async () => {
+    axios.get.mockResolvedValue({ data: mockOrders });
+    axios.put.mockResolvedValue({ data: { success: true } });
+
+    render(
+      <MemoryRouter>
+        <AdminOrders />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Ron")).toBeInTheDocument();
+
+    const select = screen.getByRole("combobox");
+
+    fireEvent.mouseDown(select);
+
+    let sameStatus;
+    await waitFor(() => {
+      sameStatus = screen.getByText("Not Process");
+    });
+
+    fireEvent.click(sameStatus);
+
+    await waitFor(() => {
+      expect(axios.put).not.toHaveBeenCalled();
+    });
+  });
 });
