@@ -36,28 +36,19 @@ describe('Category Controller Tests', () => {
 
   describe('createCategoryController', () => {
     test('should return 401 if name is not provided', async () => {
-      // Arrange
       req.body.name = undefined
-
-      // Act
       await createCategoryController(req, res)
-
-      // Assert
       expect(res.status).toHaveBeenCalledWith(401)
       expect(res.send).toHaveBeenCalledWith({ message: 'Name is required' })
     })
 
     test('should return 200 if category already exists', async () => {
-      // Arrange
       req.body.name = 'Existing Category'
       categoryModel.findOne = jest
         .fn()
         .mockResolvedValue({ name: 'Existing Category' })
 
-      // Act
       await createCategoryController(req, res)
-
-      // Assert
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.send).toHaveBeenCalledWith({
         success: true,
@@ -66,7 +57,6 @@ describe('Category Controller Tests', () => {
     })
 
     test('should create a new category successfully', async () => {
-      // Arrange
       const newCategory = {
         name: 'Test Category',
         slug: 'test-category'
@@ -74,11 +64,7 @@ describe('Category Controller Tests', () => {
 
       categoryModel.findOne = jest.fn().mockResolvedValue(null)
       categoryModel.prototype.save = jest.fn().mockResolvedValue(newCategory)
-
-      // Act
       await createCategoryController(req, res)
-
-      // Assert
       expect(res.status).toHaveBeenCalledWith(201)
       expect(res.send).toHaveBeenCalledWith({
         success: true,
@@ -88,7 +74,6 @@ describe('Category Controller Tests', () => {
     })
 
     test('should handle errors', async () => {
-      // Arrange
       const error = new Error('Test error')
       categoryModel.findOne = jest.fn().mockRejectedValue(error)
       console.log = jest.fn() // Mock console.log to avoid actual logging
@@ -115,7 +100,6 @@ describe('Category Controller Tests', () => {
 
   describe('updateCategoryController', () => {
     test('should update a category successfully', async () => {
-      // Arrange
       const updatedCategory = {
         name: 'Updated Category',
         slug: 'updated-category'
@@ -126,10 +110,8 @@ describe('Category Controller Tests', () => {
         .fn()
         .mockResolvedValue(updatedCategory)
 
-      // Act
       await updateCategoryController(req, res)
 
-      // Assert
       expect(categoryModel.findByIdAndUpdate).toHaveBeenCalledWith(
         '123',
         { name: 'Updated Category', slug: 'Updated-Category' },
@@ -144,15 +126,12 @@ describe('Category Controller Tests', () => {
     })
 
     test('should handle errors during update', async () => {
-      // Arrange
       const error = new Error('Update error')
       categoryModel.findByIdAndUpdate = jest.fn().mockRejectedValue(error)
       console.log = jest.fn() // Mock console.log
 
-      // Act
       await updateCategoryController(req, res)
 
-      // Assert
       expect(console.log).toHaveBeenCalledWith(error)
       expect(res.status).toHaveBeenCalledWith(500)
       expect(res.send).toHaveBeenCalledWith({
@@ -165,7 +144,6 @@ describe('Category Controller Tests', () => {
 
   describe('categoryControlller', () => {
     test('should get all categories successfully', async () => {
-      // Arrange
       const categories = [
         { name: 'Category 1', slug: 'category-1' },
         { name: 'Category 2', slug: 'category-2' }
@@ -173,10 +151,8 @@ describe('Category Controller Tests', () => {
 
       categoryModel.find = jest.fn().mockResolvedValue(categories)
 
-      // Act
       await categoryControlller(req, res)
 
-      // Assert
       expect(categoryModel.find).toHaveBeenCalledWith({})
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.send).toHaveBeenCalledWith({
@@ -187,15 +163,12 @@ describe('Category Controller Tests', () => {
     })
 
     test('should handle errors when getting all categories', async () => {
-      // Arrange
       const error = new Error('Find error')
       categoryModel.find = jest.fn().mockRejectedValue(error)
       console.log = jest.fn() // Mock console.log
 
-      // Act
       await categoryControlller(req, res)
 
-      // Assert
       expect(console.log).toHaveBeenCalledWith(error)
       expect(res.status).toHaveBeenCalledWith(500)
       expect(res.send).toHaveBeenCalledWith({
@@ -208,14 +181,11 @@ describe('Category Controller Tests', () => {
 
   describe('singleCategoryController', () => {
     test('should get a single category successfully', async () => {
-      // Arrange
       const category = { name: 'Test Category', slug: 'test-category' }
       categoryModel.findOne = jest.fn().mockResolvedValue(category)
 
-      // Act
       await singleCategoryController(req, res)
 
-      // Assert
       expect(categoryModel.findOne).toHaveBeenCalledWith({
         slug: 'test-category'
       })
@@ -228,15 +198,12 @@ describe('Category Controller Tests', () => {
     })
 
     test('should handle errors when getting a single category', async () => {
-      // Arrange
       const error = new Error('FindOne error')
       categoryModel.findOne = jest.fn().mockRejectedValue(error)
       console.log = jest.fn() // Mock console.log
 
-      // Act
       await singleCategoryController(req, res)
 
-      // Assert
       expect(console.log).toHaveBeenCalledWith(error)
       expect(res.status).toHaveBeenCalledWith(500)
       expect(res.send).toHaveBeenCalledWith({
@@ -249,13 +216,10 @@ describe('Category Controller Tests', () => {
 
   describe('deleteCategoryCOntroller', () => {
     test('should delete a category successfully', async () => {
-      // Arrange
       categoryModel.findByIdAndDelete = jest.fn().mockResolvedValue({})
 
-      // Act
       await deleteCategoryCOntroller(req, res)
 
-      // Assert
       expect(categoryModel.findByIdAndDelete).toHaveBeenCalledWith('123')
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.send).toHaveBeenCalledWith({
@@ -265,15 +229,12 @@ describe('Category Controller Tests', () => {
     })
 
     test('should handle errors when deleting a category', async () => {
-      // Arrange
       const error = new Error('Delete error')
       categoryModel.findByIdAndDelete = jest.fn().mockRejectedValue(error)
       console.log = jest.fn() // Mock console.log
 
-      // Act
       await deleteCategoryCOntroller(req, res)
 
-      // Assert
       expect(console.log).toHaveBeenCalledWith(error)
       expect(res.status).toHaveBeenCalledWith(500)
       expect(res.send).toHaveBeenCalledWith({
