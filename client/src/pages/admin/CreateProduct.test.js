@@ -65,8 +65,13 @@ jest.mock("antd", () => {
 });
 
 describe("CreateProduct Component", () => {
+  let setCategorySpy;
+  let setShippingSpy;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    setCategorySpy = jest.spyOn(React, "useState");
+    setShippingSpy = jest.spyOn(React, "useState");
   });
 
   // Code adapted from https://chatgpt.com/share/67c1abc0-16cc-8013-a538-111a09aae3c4
@@ -90,6 +95,8 @@ describe("CreateProduct Component", () => {
     const categoryDropdown = dropdowns[0];
     fireEvent.mouseDown(categoryDropdown);
 
+    fireEvent.change(categoryDropdown, { target: { value: "1" } });
+
     const categoryOption = await waitFor(() => screen.getByText("Electronics"));
     fireEvent.click(categoryOption);
 
@@ -112,6 +119,7 @@ describe("CreateProduct Component", () => {
 
     const shippingDropdown = dropdowns[1];
     fireEvent.mouseDown(shippingDropdown);
+    fireEvent.change(shippingDropdown, { target: { value: "Yes" } });
 
     const shippingOption = await waitFor(() => screen.findByText("Yes"));
     fireEvent.click(shippingOption);
@@ -129,6 +137,9 @@ describe("CreateProduct Component", () => {
     });
 
     expect(axios.post).toHaveBeenCalledTimes(1);
+
+    expect(setCategorySpy).toHaveBeenCalled();
+    expect(setShippingSpy).toHaveBeenCalled();
   });
 
   test("should display error message if fail to fetch categories", async () => {
@@ -147,12 +158,12 @@ describe("CreateProduct Component", () => {
     );
   });
 
-  test("should handle failure when creating a product", async () => {
+  test("should handle unexpected API error and show generic error message", async () => {
     axios.get.mockResolvedValueOnce({
       data: { success: true, category: [{ _id: "1", name: "Electronics" }] },
     });
 
-    axios.put.mockRejectedValue(new Error("Failed to create a product"));
+    axios.put.mockRejectedValueOnce(new Error("Network Error"));
 
     render(
       <MemoryRouter>
@@ -164,6 +175,7 @@ describe("CreateProduct Component", () => {
 
     const categoryDropdown = dropdowns[0];
     fireEvent.mouseDown(categoryDropdown);
+    fireEvent.change(categoryDropdown, { target: { value: "1" } });
 
     const categoryOption = await waitFor(() => screen.getByText("Electronics"));
     fireEvent.click(categoryOption);
@@ -187,6 +199,7 @@ describe("CreateProduct Component", () => {
 
     const shippingDropdown = dropdowns[1];
     fireEvent.mouseDown(shippingDropdown);
+    fireEvent.change(shippingDropdown, { target: { value: "Yes" } });
 
     const shippingOption = await waitFor(() => screen.getByText("Yes"));
     fireEvent.click(shippingOption);
@@ -197,7 +210,81 @@ describe("CreateProduct Component", () => {
     fireEvent.click(createButton);
 
     await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        "/api/v1/product/create-product",
+        expect.any(FormData)
+      );
+    });
+
+    await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith("something went wrong");
+    });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  test("should show an error if product creation fails with success false", async () => {
+    axios.get.mockResolvedValueOnce({
+      data: { success: true, category: [{ _id: "1", name: "Electronics" }] },
+    });
+
+    axios.post.mockResolvedValueOnce({
+      data: { success: false, message: "Product creation failed" },
+    });
+
+    render(
+      <MemoryRouter>
+        <CreateProduct />
+      </MemoryRouter>
+    );
+
+    const dropdowns = await waitFor(() => screen.getAllByRole("combobox"));
+
+    const categoryDropdown = dropdowns[0];
+    fireEvent.mouseDown(categoryDropdown);
+    fireEvent.change(categoryDropdown, { target: { value: "1" } });
+
+    const categoryOption = await waitFor(() => screen.getByText("Electronics"));
+    fireEvent.click(categoryOption);
+
+    await waitFor(() =>
+      expect(screen.getByText("Electronics")).toBeInTheDocument()
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("write a name"), {
+      target: { value: "Test Product" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("write a description"), {
+      target: { value: "This is a test product" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("write a Price"), {
+      target: { value: "100" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("write a quantity"), {
+      target: { value: "10" },
+    });
+
+    const shippingDropdown = dropdowns[1];
+    fireEvent.mouseDown(shippingDropdown);
+    fireEvent.change(shippingDropdown, { target: { value: "Yes" } });
+
+    const shippingOption = await waitFor(() => screen.getByText("Yes"));
+    fireEvent.click(shippingOption);
+
+    const createButton = screen.getByRole("button", {
+      name: /create product/i,
+    });
+    fireEvent.click(createButton);
+
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        "/api/v1/product/create-product",
+        expect.any(FormData)
+      );
+    });
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Product creation failed");
     });
 
     expect(mockNavigate).not.toHaveBeenCalled();
