@@ -1,78 +1,92 @@
-import React from "react";
-import { useAuth } from "../../context/auth";
-import { cleanup, render, screen } from "@testing-library/react";
-import AdminDashboard from "./AdminDashboard";
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import AdminDashboard from './AdminDashboard'
+import { useAuth } from '../../context/auth'
 
-// Code adapted from https://chatgpt.com/share/67bd91a1-65c8-8013-ab56-a4318718716c
+// Mocks
+jest.mock('../../context/auth', () => ({
+  useAuth: jest.fn()
+}))
 
-// mock to erase functionality of a module
-jest.mock("../../context/auth", () => ({
-  useAuth: jest.fn(),
-}));
+jest.mock('../../components/Layout', () => {
+  return ({ children }) => <div data-testid='mock-layout'>{children}</div>
+})
 
-jest.mock("../../components/AdminMenu", () => () => (
-  <nav data-testid="admin-menu">Admin Menu</nav>
-));
-jest.mock("../../components/Layout", () => ({ children }) => (
-  <div data-testid="layout">{children}</div>
-));
+jest.mock('../../components/AdminMenu', () => {
+  return () => <div data-testid='mock-admin-menu'>Admin Menu</div>
+})
 
-describe("AdminDashboard Component", () => {
-  const mockAuthUser = {
-    user: {
-      name: "John Tan",
-      email: "john@email.com",
-      phone: "98982211",
-    },
-  };
-
+describe('AdminDashboard Component', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-  });
+    // Clear all mocks before each test
+    jest.clearAllMocks()
+  })
 
-  afterEach(() => {
-    cleanup();
-  });
+  // TEST #1
+  it('renders with Layout wrapper and AdminMenu', () => {
+    useAuth.mockReturnValue([{ user: null }])
+    render(<AdminDashboard />)
 
-  test("render Admin Dashboard with user information correctly", () => {
-    useAuth.mockReturnValue([mockAuthUser]);
-    render(<AdminDashboard />);
-    expect(screen.getByTestId("layout")).toBeInTheDocument();
-    expect(screen.getByTestId("admin-menu")).toBeInTheDocument();
-    expect(screen.getByText("Admin Name : John Tan")).toBeInTheDocument();
+    expect(screen.getByTestId('mock-layout')).toBeInTheDocument()
+    expect(screen.getByTestId('mock-admin-menu')).toBeInTheDocument()
+  })
+
+  // TEST #2
+  it('displays admin information when auth data is present', () => {
+    const mockUser = {
+      name: 'Test Admin',
+      email: 'admin@test.com',
+      phone: '1234567890'
+    }
+    useAuth.mockReturnValue([{ user: mockUser }])
+
+    render(<AdminDashboard />)
+
     expect(
-      screen.getByText("Admin Email : john@email.com")
-    ).toBeInTheDocument();
-    expect(screen.getByText("Admin Contact : 98982211")).toBeInTheDocument();
-  });
+      screen.getByText(`Admin Name : ${mockUser.name}`)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(`Admin Email : ${mockUser.email}`)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(`Admin Contact : ${mockUser.phone}`)
+    ).toBeInTheDocument()
+  })
 
-  test("handles missing user data gracefully", () => {
-    useAuth.mockReturnValue([{}]);
-    render(<AdminDashboard />);
-    expect(screen.getByText("Admin Name :")).toBeInTheDocument();
-    expect(screen.getByText("Admin Email :")).toBeInTheDocument();
-    expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
-  });
+  // TEST #3
+  it('handles missing user data gracefully', () => {
+    useAuth.mockReturnValue([{}])
+    render(<AdminDashboard />)
 
-  test("handles completely missing auth state", () => {
-    useAuth.mockReturnValue([null]);
-    render(<AdminDashboard />);
-    expect(screen.getByText("Admin Name :")).toBeInTheDocument();
-    expect(screen.getByText("Admin Email :")).toBeInTheDocument();
-    expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
-  });
+    expect(screen.getByText('Admin Name :')).toBeInTheDocument()
+    expect(screen.getByText('Admin Email :')).toBeInTheDocument()
+    expect(screen.getByText('Admin Contact :')).toBeInTheDocument()
+  })
 
-  test("handles empty array return from useAuth", () => {
-    useAuth.mockReturnValue([]);
-    render(<AdminDashboard />);
-    expect(screen.getByText("Admin Name :")).toBeInTheDocument();
-    expect(screen.getByText("Admin Email :")).toBeInTheDocument();
-    expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
-  });
+  // TEST #4
+  it('handles null auth state', () => {
+    useAuth.mockReturnValue([null])
+    render(<AdminDashboard />)
 
-  test("calls useAuth exactly once", () => {
-    useAuth.mockReturnValue([mockAuthUser]);
-    render(<AdminDashboard />);
-    expect(useAuth).toHaveBeenCalledTimes(1);
-  });
-});
+    expect(screen.getByText('Admin Name :')).toBeInTheDocument()
+    expect(screen.getByText('Admin Email :')).toBeInTheDocument()
+    expect(screen.getByText('Admin Contact :')).toBeInTheDocument()
+  })
+
+  // TEST #5
+  it('handles undefined user properties', () => {
+    const mockUser = {
+      name: undefined,
+      email: undefined,
+      phone: undefined
+    }
+    useAuth.mockReturnValue([{ user: mockUser }])
+
+    render(<AdminDashboard />)
+
+    expect(screen.getByText('Admin Name :')).toBeInTheDocument()
+    expect(screen.getByText('Admin Email :')).toBeInTheDocument()
+    expect(screen.getByText('Admin Contact :')).toBeInTheDocument()
+  })
+})

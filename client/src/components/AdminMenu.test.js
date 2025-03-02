@@ -1,56 +1,41 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import AdminMenu from "./AdminMenu";
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import { BrowserRouter } from 'react-router-dom'
+import AdminMenu from './AdminMenu'
 
-// Code from https://chatgpt.com/share/67bd91a1-65c8-8013-ab56-a4318718716c
+// Helper function to render component with Router
+const renderWithRouter = component => {
+  return render(<BrowserRouter>{component}</BrowserRouter>)
+}
 
-describe("AdminMenu Component", () => {
-  test("renders the Admin Panel heading", () => {
-    render(
-      <MemoryRouter>
-        <AdminMenu />
-      </MemoryRouter>
-    );
+describe('AdminMenu Component', () => {
+  beforeEach(() => {
+    // Clear any mocks if added in future
+    jest.clearAllMocks()
+  })
 
-    expect(screen.getByText("Admin Panel")).toBeInTheDocument();
-  });
+  // TEST #1: Basic rendering
+  it('renders the admin menu with title', () => {
+    renderWithRouter(<AdminMenu />)
+    expect(screen.getByText('Admin Panel')).toBeInTheDocument()
+  })
 
-  test("renders all navigation links in admin panel", () => {
-    render(
-      <MemoryRouter>
-        <AdminMenu />
-      </MemoryRouter>
-    );
+  // TEST #2: Navigation links presence
+  it('renders all navigation links with correct paths', () => {
+    renderWithRouter(<AdminMenu />)
 
-    expect(screen.getByText("Create Category")).toBeInTheDocument();
-    expect(screen.getByText("Create Product")).toBeInTheDocument();
-    expect(screen.getByText("Products")).toBeInTheDocument();
-    expect(screen.getByText("Orders")).toBeInTheDocument();
-  });
+    const links = [
+      { text: 'Create Category', path: '/dashboard/admin/create-category' },
+      { text: 'Create Product', path: '/dashboard/admin/create-product' },
+      { text: 'Products', path: '/dashboard/admin/products' },
+      { text: 'Orders', path: '/dashboard/admin/orders' }
+    ]
 
-  test("ensure that navigation links have correct paths", () => {
-    render(
-      <MemoryRouter>
-        <AdminMenu />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText("Create Category")).toHaveAttribute(
-      "href",
-      "/dashboard/admin/create-category"
-    );
-    expect(screen.getByText("Create Product")).toHaveAttribute(
-      "href",
-      "/dashboard/admin/create-product"
-    );
-    expect(screen.getByText("Products")).toHaveAttribute(
-      "href",
-      "/dashboard/admin/products"
-    );
-    expect(screen.getByText("Orders")).toHaveAttribute(
-      "href",
-      "/dashboard/admin/orders"
-    );
-  });
-});
+    links.forEach(link => {
+      const navLink = screen.getByText(link.text)
+      expect(navLink).toBeInTheDocument()
+      expect(navLink.getAttribute('href')).toBe(link.path)
+    })
+  })
+})
