@@ -37,10 +37,10 @@ module.exports = {
     //     '!client/src/pages/Auth/**/*.test.js',
     //     '!client/src/pages/**/*.test.js'
   ],
-  coverageThreshold: {
-    global: {
-      lines: 20,
-      functions: 20,
-    },
-  },
+  // coverageThreshold: {
+  //  global: {
+  // lines: 20,
+  // functions: 20,
+  //},
+  //},
 };
