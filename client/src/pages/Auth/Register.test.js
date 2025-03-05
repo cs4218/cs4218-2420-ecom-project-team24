@@ -128,7 +128,7 @@ describe("Register Component", () => {
     fireEvent.click(getByText("REGISTER"));
 
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
-    expect(toast.error).toHaveBeenCalledWith("Something went wrong");
+    expect(toast.error).toHaveBeenCalledWith("User already exists");
   });
 
   it("should display generic error message during handleSubmit", async () => {
