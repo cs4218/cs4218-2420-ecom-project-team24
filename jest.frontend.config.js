@@ -27,6 +27,7 @@ module.exports = {
     "<rootDir>/client/src/components/Form/*.test.js",
     "<rootDir>/client/src/context/*.test.js",
     "<rootDir>/client/src/hooks/*.test.js",
+    "<rootDir>/client/src/components/*.test.js",
   ],
 
   // jest code coverage
