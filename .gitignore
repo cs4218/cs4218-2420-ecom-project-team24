@@ -6,5 +6,3 @@ node_modules
 /coverage/
 /.env
 /client/.env
-/sonar-project.properties
-/.scannerwork/
