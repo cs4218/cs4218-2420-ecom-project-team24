@@ -8,12 +8,20 @@ import { useAuth } from '../../context/auth';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 // Mocks
+jest.mock("../../context/auth", () => ({
+  useAuth: jest.fn(() => [null, jest.fn()]), // Mock useAuth hook to return null state and a mock function for setAuth
+}));
+
+jest.mock("../../context/cart", () => ({
+  useCart: jest.fn(() => [null, jest.fn()]), // Mock useCart hook to return null state and a mock function
+}));
+
+jest.mock("../../context/search", () => ({
+  useSearch: jest.fn(() => [{ keyword: "" }, jest.fn()]), // Mock useSearch hook to return null state and a mock function
+}));
+
 jest.mock('axios');
 jest.mock('react-hot-toast');
-
-jest.mock('../../context/auth', () => ({
-  useAuth: jest.fn(),
-}));
 
 jest.mock('../../components/Layout', () => {
   return ({ children }) => <div data-testid="mock-layout">{children}</div>;
