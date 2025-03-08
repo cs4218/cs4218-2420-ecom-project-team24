@@ -17,6 +17,7 @@ afterAll(async () => {
 });
 
 describe("Order Model Unit Tests", () => {
+  // TEST #1
   it("should have the correct fields and enforce correct field types", () => {
     const fields = Object.keys(Order.schema.paths);
     expect(fields).toContain("products");
@@ -36,6 +37,7 @@ describe("Order Model Unit Tests", () => {
   });
 
   describe("Model Validation", () => {
+    // TEST #2
     it("should accept valid order data", async () => {
       const order = new Order({
         products: [new mongoose.Types.ObjectId()],
@@ -47,6 +49,7 @@ describe("Order Model Unit Tests", () => {
       expect(err).toBeUndefined();
     });
 
+    // TEST #3
     it("should allow empty payment field", async () => {
       const order = new Order({
         products: [new mongoose.Types.ObjectId()],
@@ -57,19 +60,30 @@ describe("Order Model Unit Tests", () => {
       expect(err).toBeUndefined();
     });
 
-    it("should create an order without required fields", async () => {
+    // TEST #4
+    it("should require products and buyer fields", async () => {
       const order = new Order({
         status: "Not Process",
       });
+      const err = order.validateSync();
+      expect(err.errors.products).toBeDefined();
+      expect(err.errors.buyer).toBeDefined();
+    });
 
-      const savedOrder = await order.save();
-
-      expect(savedOrder._id).toBeDefined();
-      expect(savedOrder.status).toBe("Not Process");
+    // TEST #5
+    it("should not allow empty products array", async () => {
+      const order = new Order({
+        products: [],
+        buyer: new mongoose.Types.ObjectId(),
+        status: "Not Process",
+      });
+      const err = order.validateSync();
+      expect(err.errors.products).toBeDefined();
     });
   });
 
   describe("Model Methods and Properties", () => {
+    // TEST #6
     it("should create a new order with valid data", async () => {
       const validOrder = new Order({
         products: [new mongoose.Types.ObjectId()],
@@ -87,6 +101,7 @@ describe("Order Model Unit Tests", () => {
       expect(savedOrder.status).toBe("Not Process");
     });
 
+    // TEST #7
     it("should update the status of an existing order", async () => {
       const order = new Order({
         products: [new mongoose.Types.ObjectId()],
@@ -102,6 +117,7 @@ describe("Order Model Unit Tests", () => {
       expect(updatedOrder.status).toBe("Shipped");
     });
 
+    // TEST #8
     it("should delete an order from the database", async () => {
       const order = new Order({
         products: [new mongoose.Types.ObjectId()],
@@ -117,15 +133,12 @@ describe("Order Model Unit Tests", () => {
       expect(deletedOrder).toBeNull();
     });
 
-    it("should create an order without any fields", async () => {
+    // TEST #9
+    it("should not create an order without required fields", async () => {
       const order = new Order({});
-      const savedOrder = await order.save();
-
-      expect(savedOrder._id).toBeDefined();
-      expect(savedOrder.products).toEqual([]);
-      expect(savedOrder.payment).toBeUndefined();
-      expect(savedOrder.buyer).toBeUndefined();
-      expect(savedOrder.status).toBe("Not Process");
+      const err = order.validateSync();
+      expect(err.errors.products).toBeDefined();
+      expect(err.errors.buyer).toBeDefined();
     });
   });
 });
