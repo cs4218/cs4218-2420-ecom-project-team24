@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import Products from "./productModel";
-import Category from "./categoryModel";
+import Category from "./categoryModel"; // Ensure you have a categoryModel.js file
 
 let mongoServer;
 
@@ -74,18 +74,90 @@ describe("Products Model Unit Tests", () => {
     });
 
     // TEST #3
-    it("should require all required fields", async () => {
-      const product = new Products({});
+    it("should require a name", async () => {
+      const product = new Products({
+        slug: "test-product",
+        description: "This is a test product",
+        price: 100,
+        category: category._id,
+        quantity: 10,
+        shipping: true,
+      });
       const err = product.validateSync();
       expect(err.errors.name).toBeDefined();
-      expect(err.errors.slug).toBeDefined();
-      expect(err.errors.description).toBeDefined();
-      expect(err.errors.price).toBeDefined();
-      expect(err.errors.category).toBeDefined();
-      expect(err.errors.quantity).toBeDefined();
     });
 
     // TEST #4
+    it("should require a slug", async () => {
+      const product = new Products({
+        name: "Test Product",
+        description: "This is a test product",
+        price: 100,
+        category: category._id,
+        quantity: 10,
+        shipping: true,
+      });
+      const err = product.validateSync();
+      expect(err.errors.slug).toBeDefined();
+    });
+
+    // TEST #5
+    it("should require a description", async () => {
+      const product = new Products({
+        name: "Test Product",
+        slug: "test-product",
+        price: 100,
+        category: category._id,
+        quantity: 10,
+        shipping: true,
+      });
+      const err = product.validateSync();
+      expect(err.errors.description).toBeDefined();
+    });
+
+    // TEST #6
+    it("should require a price", async () => {
+      const product = new Products({
+        name: "Test Product",
+        slug: "test-product",
+        description: "This is a test product",
+        category: category._id,
+        quantity: 10,
+        shipping: true,
+      });
+      const err = product.validateSync();
+      expect(err.errors.price).toBeDefined();
+    });
+
+    // TEST #7
+    it("should require a category", async () => {
+      const product = new Products({
+        name: "Test Product",
+        slug: "test-product",
+        description: "This is a test product",
+        price: 100,
+        quantity: 10,
+        shipping: true,
+      });
+      const err = product.validateSync();
+      expect(err.errors.category).toBeDefined();
+    });
+
+    // TEST #8
+    it("should require a quantity", async () => {
+      const product = new Products({
+        name: "Test Product",
+        slug: "test-product",
+        description: "This is a test product",
+        price: 100,
+        category: category._id,
+        shipping: true,
+      });
+      const err = product.validateSync();
+      expect(err.errors.quantity).toBeDefined();
+    });
+
+    // TEST #9
     it("should allow creating a product without optional fields", async () => {
       const product = new Products({
         name: "Test Product",
@@ -109,7 +181,7 @@ describe("Products Model Unit Tests", () => {
   });
 
   describe("Model Methods and Properties", () => {
-    // TEST #5
+    // TEST #10
     it("should create a new product with valid data", async () => {
       const validProduct = new Products({
         name: "Test Product",
@@ -132,7 +204,7 @@ describe("Products Model Unit Tests", () => {
       expect(savedProduct.shipping).toBe(true);
     });
 
-    // TEST #6
+    // TEST #11
     it("should update the quantity of an existing product", async () => {
       const product = new Products({
         name: "Test Product",
@@ -151,7 +223,7 @@ describe("Products Model Unit Tests", () => {
       expect(updatedProduct.quantity).toBe(20);
     });
 
-    // TEST #7
+    // TEST #12
     it("should delete a product from the database", async () => {
       const product = new Products({
         name: "Test Product",
