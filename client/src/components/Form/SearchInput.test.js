@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import axios from "axios";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import SearchInput from "./SearchInput";
 
@@ -22,10 +22,8 @@ describe("SearchInput Component", () => {
   // TEST #1
   it("renders search input form", () => {
     const { getByPlaceholderText, getByRole } = render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Routes>
-          <Route path="/" element={<SearchInput />} />
-        </Routes>
+      <MemoryRouter>
+        <SearchInput />
       </MemoryRouter>
     );
 
@@ -36,10 +34,8 @@ describe("SearchInput Component", () => {
   // TEST #2
   it("should allow typing in the search input", () => {
     const { getByPlaceholderText } = render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Routes>
-          <Route path="/" element={<SearchInput />} />
-        </Routes>
+      <MemoryRouter>
+        <SearchInput />
       </MemoryRouter>
     );
 
@@ -55,10 +51,8 @@ describe("SearchInput Component", () => {
     });
 
     const { getByPlaceholderText, getByRole } = render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Routes>
-          <Route path="/" element={<SearchInput />} />
-        </Routes>
+      <MemoryRouter>
+        <SearchInput />
       </MemoryRouter>
     );
 
@@ -76,10 +70,8 @@ describe("SearchInput Component", () => {
     console.log = jest.fn(); // Mock console.log
 
     const { getByPlaceholderText, getByRole } = render(
-      <MemoryRouter initialEntries={["/"]}>
-        <Routes>
-          <Route path="/" element={<SearchInput />} />
-        </Routes>
+      <MemoryRouter>
+        <SearchInput />
       </MemoryRouter>
     );
 
