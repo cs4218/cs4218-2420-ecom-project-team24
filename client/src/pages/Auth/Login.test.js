@@ -178,7 +178,7 @@ describe("Login Component", () => {
     axios.post.mockResolvedValueOnce({
       data: {
         success: false,
-        message: "Invalid credentials",
+        message: "Invalid credential",
       },
     });
   
@@ -199,7 +199,7 @@ describe("Login Component", () => {
     fireEvent.click(getByText("LOGIN"));
   
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
-    expect(toast.error).toHaveBeenCalledWith("Invalid credentials");
+    expect(toast.error).toHaveBeenCalledWith("Invalid credential");
   });
 
   // TEST #7
