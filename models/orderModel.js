@@ -6,20 +6,30 @@ const orderSchema = new mongoose.Schema(
       {
         type: mongoose.ObjectId,
         ref: "Products",
+        required: true,
       },
     ],
-    payment: {},
+    payment: {
+      type: Object,
+      default: {},
+    },
     buyer: {
       type: mongoose.ObjectId,
       ref: "users",
+      required: true,
     },
     status: {
       type: String,
       default: "Not Process",
-      enum: ["Not Process", "Processing", "Shipped", "deliverd", "cancel"],
+      enum: ["Not Process", "Processing", "Shipped", "delivered", "cancel"],
+      required: true,
     },
   },
   { timestamps: true }
 );
+
+orderSchema.path("products").validate(function (value) {
+  return value.length > 0;
+}, "Products array cannot be empty");
 
 export default mongoose.model("Order", orderSchema);
