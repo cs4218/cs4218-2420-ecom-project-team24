@@ -65,6 +65,7 @@ jest.mock("antd", () => {
 
   Select.Option = Option;
 
+  // Code adapted from https://chatgpt.com/share/67cd2dbe-bd5c-8013-bb15-21bfbe8deba8
   const Modal = ({ open, children }) => (
     <div data-testid="mocked-modal">{open ? children : null}</div>
   );
@@ -86,6 +87,7 @@ describe("CreateProduct Component", () => {
     setShippingSpy = jest.spyOn(React, "useState");
   });
 
+  // Code adapted from https://chatgpt.com/share/67cd2dbe-bd5c-8013-bb15-21bfbe8deba8
   test("should fetch categories and display them", async () => {
     axios.get.mockResolvedValueOnce({
       data: { success: true, category: [{ _id: "1", name: "Electronics" }] },
@@ -106,7 +108,8 @@ describe("CreateProduct Component", () => {
     });
   });
 
-  test("should NOT update categories if API response is unsuccessful", async () => {
+  // Code adapted from https://chatgpt.com/share/67cd2dbe-bd5c-8013-bb15-21bfbe8deba8
+  test("should not update categories if API response is unsuccessful", async () => {
     axios.get.mockResolvedValueOnce({
       data: { success: false, category: [{ _id: "1", name: "Electronics" }] },
     });
@@ -131,6 +134,8 @@ describe("CreateProduct Component", () => {
     axios.get.mockResolvedValueOnce({
       data: { success: true, category: [{ _id: "1", name: "Electronics" }] },
     });
+
+    window.URL.createObjectURL = jest.fn(() => "mocked-image-url");
 
     axios.post.mockResolvedValueOnce(
       Promise.resolve({
@@ -169,6 +174,20 @@ describe("CreateProduct Component", () => {
     });
     fireEvent.change(screen.getByPlaceholderText("write a quantity"), {
       target: { value: "10" },
+    });
+
+    const file = new File(["dummy content"], "test-image.jpg", {
+      type: "image/jpeg",
+    });
+
+    const fileInput = screen.getByLabelText("Upload Photo");
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByAltText("product_photo")).toHaveAttribute(
+        "src",
+        "mocked-image-url"
+      );
     });
 
     const shippingDropdown = dropdowns[1];
@@ -316,6 +335,20 @@ describe("CreateProduct Component", () => {
     });
     fireEvent.change(screen.getByPlaceholderText("write a quantity"), {
       target: { value: "10" },
+    });
+
+    const file = new File(["dummy content"], "test-image.jpg", {
+      type: "image/jpeg",
+    });
+
+    const fileInput = screen.getByLabelText("Upload Photo");
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByAltText("product_photo")).toHaveAttribute(
+        "src",
+        "mocked-image-url"
+      );
     });
 
     const shippingDropdown = dropdowns[1];
