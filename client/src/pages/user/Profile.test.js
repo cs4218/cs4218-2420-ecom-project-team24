@@ -123,9 +123,9 @@ describe('Profile Component', () => {
   it('submits the form correctly', async () => {
     const mockSetAuth = jest.fn();
     useAuth.mockReturnValue([{ user: mockUser }, mockSetAuth]);
-
+  
     axios.put.mockResolvedValue({ data: { updatedUser: { ...mockUser, name: 'Updated Name' } } });
-
+  
     await act(async () => {
       render(
         <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
@@ -135,39 +135,38 @@ describe('Profile Component', () => {
         </MemoryRouter>
       );
     });
-
+  
     const nameInput = screen.getByPlaceholderText('Enter Your Name');
     const passwordInput = screen.getByPlaceholderText('Enter Your Password');
     fireEvent.change(nameInput, { target: { value: 'Updated Name' } });
     fireEvent.change(passwordInput, { target: { value: 'updatedpassword' } });
-
+  
     const submitButton = screen.getByText('UPDATE');
     fireEvent.click(submitButton);
-
+  
     await waitFor(() => expect(axios.put).toHaveBeenCalledTimes(1));
-
+  
     expect(axios.put).toHaveBeenCalledWith(
       '/api/v1/auth/profile',
       expect.objectContaining({
-        name: 'Updated Name',
-        email: mockUser.email,
-        password: 'updatedpassword',
+        updatedData: {
+          name: 'Updated Name',
+          password: 'updatedpassword',
+        },
       })
     );
-
+  
     await waitFor(() => expect(mockSetAuth).toHaveBeenCalledWith({
       user: { ...mockUser, name: 'Updated Name' },
     }));
-
+  
     await waitFor(() => expect(toast.success).toHaveBeenCalledWith('Profile Updated Successfully'));
   });
 
   // TEST #5
   it('handles form submission errors', async () => {
-    axios.put.mockRejectedValue({
-      response: { data: { message: 'Something went wrong' } },
-    });
-
+    axios.put.mockRejectedValueOnce(new Error('Something went wrong'));
+  
     await act(async () => {
       render(
         <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
@@ -177,10 +176,14 @@ describe('Profile Component', () => {
         </MemoryRouter>
       );
     });
-
+  
+    const nameInput = screen.getByPlaceholderText('Enter Your Name');
+    fireEvent.change(nameInput, { target: { value: 'Updated Name' } });
+  
     const submitButton = screen.getByText('UPDATE');
     fireEvent.click(submitButton);
-
+  
+    await waitFor(() => expect(axios.put).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Something went wrong'));
   });
 
@@ -198,5 +201,128 @@ describe('Profile Component', () => {
 
     const emailInput = screen.getByPlaceholderText('Enter Your Email');
     expect(emailInput).toBeDisabled();
+  });
+
+  // TEST #7
+  it('shows error if name field is empty', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+          <Routes>
+            <Route path="/dashboard/user/profile" element={<Profile />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const nameInput = screen.getByPlaceholderText('Enter Your Name');
+    fireEvent.change(nameInput, { target: { value: '' } });
+
+    const submitButton = screen.getByText('UPDATE');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Name field cannot be empty.'));
+  });
+
+  // TEST #8
+  it('shows error if phone field is empty', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+          <Routes>
+            <Route path="/dashboard/user/profile" element={<Profile />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const phoneInput = screen.getByPlaceholderText('Enter Your Phone');
+    fireEvent.change(phoneInput, { target: { value: '' } });
+
+    const submitButton = screen.getByText('UPDATE');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Phone field cannot be empty.'));
+  });
+
+  // TEST #9
+  it('shows error if address field is empty', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+          <Routes>
+            <Route path="/dashboard/user/profile" element={<Profile />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const addressInput = screen.getByPlaceholderText('Enter Your Address');
+    fireEvent.change(addressInput, { target: { value: '' } });
+
+    const submitButton = screen.getByText('UPDATE');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Address field cannot be empty.'));
+  });
+
+  // TEST #10
+  it('shows error if password is less than 6 characters', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+          <Routes>
+            <Route path="/dashboard/user/profile" element={<Profile />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const passwordInput = screen.getByPlaceholderText('Enter Your Password');
+    fireEvent.change(passwordInput, { target: { value: '123' } });
+
+    const submitButton = screen.getByText('UPDATE');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Password must be at least 6 characters long.'));
+  });
+
+  // TEST #11
+  it('shows error if password contains whitespace', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+          <Routes>
+            <Route path="/dashboard/user/profile" element={<Profile />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const passwordInput = screen.getByPlaceholderText('Enter Your Password');
+    fireEvent.change(passwordInput, { target: { value: 'pass word' } });
+
+    const submitButton = screen.getByText('UPDATE');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Password cannot contain whitespace.'));
+  });
+
+  // TEST #12
+  it('shows error if no changes are detected', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+          <Routes>
+            <Route path="/dashboard/user/profile" element={<Profile />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const submitButton = screen.getByText('UPDATE');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('No changes detected. Please update at least one field before saving.'));
   });
 });

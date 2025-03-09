@@ -26,13 +26,48 @@ const Profile = () => {
   // form function
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Check for empty fields and show specific error messages
+  if (!name.trim()) {
+    toast.error("Name field cannot be empty.");
+    return;
+  }
+  if (!phone.trim()) {
+    toast.error("Phone field cannot be empty.");
+    return;
+  }
+  if (!address.trim()) {
+    toast.error("Address field cannot be empty.");
+    return;
+  }
+
+  // Check if password is not empty and meets length requirement
+  if (password && password.length < 6) {
+    toast.error("Password must be at least 6 characters long.");
+    return;
+  }
+
+  // Check for whitespace in password
+  if (password && /\s/.test(password)) {
+    toast.error("Password cannot contain whitespace.");
+    return;
+  }
+
+  const updatedData = {};
+
+  // Add only fields that have changed and are not empty
+  if (name.trim() && name !== auth?.user?.name) updatedData.name = name;
+  if (password.trim()) updatedData.password = password;
+  if (phone.trim() && phone !== auth?.user?.phone) updatedData.phone = phone;
+  if (address.trim() && address !== auth?.user?.address) updatedData.address = address;
+
+  // If no fields have been updated, return with a message
+  if (!Object.keys(updatedData).length) {
+    toast.error("No changes detected. Please update at least one field before saving.");
+    return;
+  }
+
     try {
-      const { data } = await axios.put("/api/v1/auth/profile", {
-        name,
-        email,
-        password,
-        phone,
-        address,
+      const { data } = await axios.put("/api/v1/auth/profile", {updatedData
       });
       if (data?.error) {
         toast.error(data?.error);
@@ -66,7 +101,7 @@ const Profile = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="form-control"
-                    id="exampleInputEmail1"
+                    id="exampleInputName"
                     placeholder="Enter Your Name"
                     autoFocus
                   />
@@ -98,7 +133,7 @@ const Profile = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="form-control"
-                    id="exampleInputEmail1"
+                    id="exampleInputPhone"
                     placeholder="Enter Your Phone"
                   />
                 </div>
@@ -108,7 +143,7 @@ const Profile = () => {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     className="form-control"
-                    id="exampleInputEmail1"
+                    id="exampleInput"
                     placeholder="Enter Your Address"
                   />
                 </div>
