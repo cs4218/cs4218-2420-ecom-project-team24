@@ -325,4 +325,42 @@ describe('Profile Component', () => {
 
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('No changes detected. Please update at least one field before saving.'));
   });
+
+  it("handles error response from API", async () => {
+    axios.put.mockResolvedValueOnce({
+      data: {
+        error: "Profile update failed",
+      },
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+        <Routes>
+          <Route path="/dashboard/user/profile" element={<Profile />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Enter Your Name"), {
+      target: { value: "Test User 2" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Enter Your Phone"), {
+      target: { value: "0987654321" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Enter Your Address"), {
+      target: { value: "456 Main St" },
+    });
+    fireEvent.click(screen.getByText("UPDATE"));
+
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/profile", {
+        updatedData: {
+          name: "Test User 2",
+          phone: "0987654321",
+          address: "456 Main St",
+        },
+      });
+      expect(toast.error).toHaveBeenCalledWith("Profile update failed");
+    });
+  });
 });
