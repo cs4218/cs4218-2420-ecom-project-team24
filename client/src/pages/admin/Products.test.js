@@ -1,8 +1,9 @@
 import React from 'react';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Products from './Products';
 import axios from 'axios';
+import UpdateProduct from './UpdateProduct';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -73,6 +74,7 @@ describe('Products Component', () => {
       );
     });
 
+    expect(screen.getByText("All Products List")).toBeInTheDocument();
     expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product');
 
     const productLinks = screen.getAllByRole('link');
@@ -121,5 +123,47 @@ describe('Products Component', () => {
     expect(toast.error).toHaveBeenCalledWith('Something Went Wrong');
 
     consoleSpy.mockRestore();
+  });
+
+  // TEST #5
+  it('navigates to product detail page on product click', async () => {
+    axios.get.mockResolvedValue({ data: { products: mockProducts } });
+
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/admin/products"]}>
+          <Routes>
+            <Route path="/dashboard/admin/products" element={<Products />} />
+            <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    const productLink = screen.getByText('Laptop').closest('a');
+    fireEvent.click(productLink);
+
+    await waitFor(() => {
+      expect(screen.getByText('Update Product')).toBeInTheDocument(); // Assuming "Update Product" is a text in the UpdateProduct component
+    });
+  });
+
+  // TEST #6
+  it('displays alt text for product images correctly', async () => {
+    axios.get.mockResolvedValue({ data: { products: mockProducts } });
+
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={["/dashboard/admin/products"]}>
+          <Routes>
+            <Route path="/dashboard/admin/products" element={<Products />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    mockProducts.forEach((product) => {
+      expect(screen.getByAltText(product.name)).toBeInTheDocument();
+    });
   });
 });
