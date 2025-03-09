@@ -29,6 +29,17 @@ jest.mock("react-router-dom", () => ({
 }));
 
 describe("UpdateProduct Component", () => {
+  const mockProductData = {
+    product: {
+      name: "Test Product",
+      _id: "123",
+      description: "Test Description",
+      price: 100,
+      quantity: 10,
+      shipping: true,
+      category: { _id: "1" },
+    },
+  };
   const mockNavigate = jest.fn();
 
   beforeEach(() => {
@@ -65,6 +76,28 @@ describe("UpdateProduct Component", () => {
 
     await waitFor(() => expect(axios.get).toHaveBeenCalled());
     expect(console.log).toHaveBeenCalledWith(new Error("Failed to fetch product"));
+  });
+
+  it("sets state correctly when fetching single product", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockProductData });
+    axios.get.mockResolvedValueOnce({ data: mockProductData });
+    axios.get.mockResolvedValueOnce({ data: { success: true, category: [] } });
+    render(
+      <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
+        <Routes>
+          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith("/api/v1/product/get-product/test-slug"));
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText("write a name")).toHaveValue("Test Product");
+      expect(screen.getByPlaceholderText("write a description")).toHaveValue("Test Description");
+      expect(screen.getByPlaceholderText("write a Price")).toHaveValue(100);
+      expect(screen.getByPlaceholderText("write a quantity")).toHaveValue(10);
+    });
   });
 
   it("handles fetch categories failure", async () => {
