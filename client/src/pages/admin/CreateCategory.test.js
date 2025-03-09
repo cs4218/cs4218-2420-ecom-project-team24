@@ -246,9 +246,7 @@ describe("CreateCategory Component", () => {
     fireEvent.click(submitButton[1]);
 
     await waitFor(() => expect(axios.put).toHaveBeenCalledTimes(1));
-    expect(toast.error).toHaveBeenCalledWith(
-      "Somtihing went wrong"
-    );
+    expect(toast.error).toHaveBeenCalledWith("Somtihing went wrong");
   });
 
   it("should successfully delete a category", async () => {
@@ -386,5 +384,25 @@ describe("CreateCategory Component", () => {
       expect(screen.getByText("Gaming")).toBeInTheDocument();
       expect(screen.getByText("Electronics")).toBeInTheDocument();
     });
+  });
+
+  test("should show error toast if API returns success false when fetching categories", async () => {
+    axios.get.mockResolvedValueOnce({
+      data: { success: false, category: [] },
+    });
+
+    render(
+      <MemoryRouter>
+        <CreateCategory />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
+    });
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Something went wrong in getting category"
+    );
   });
 });
