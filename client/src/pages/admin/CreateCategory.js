@@ -34,8 +34,13 @@ const CreateCategory = () => {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get("/api/v1/category/get-category");
+
+      console.log("Fetched categories:", data);
+
       if (data.success) {
         setCategories(data.category);
+      } else {
+        toast.error("Something went wrong in getting category");
       }
     } catch (error) {
       console.log(error);
@@ -143,7 +148,7 @@ const CreateCategory = () => {
             <Modal
               onCancel={() => setVisible(false)}
               footer={null}
-              visible={visible}
+              open={visible}
             >
               <CategoryForm
                 value={updatedName}

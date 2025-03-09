@@ -14,7 +14,14 @@ import CreateProduct from "./CreateProduct";
 import { act } from "react-dom/test-utils";
 
 jest.mock("axios");
-jest.mock("react-hot-toast");
+jest.mock("react-hot-toast", () => ({
+  __esModule: true,
+  default: {
+    error: jest.fn(),
+    success: jest.fn(),
+  },
+  Toaster: () => <div data-testid="toaster-mock">Mocked Toaster</div>,
+}));
 
 jest.mock("../../context/auth", () => ({
   useAuth: jest.fn(() => [null, jest.fn()]), // Mock useAuth hook to return null state and a mock function for setAuth
@@ -58,9 +65,15 @@ jest.mock("antd", () => {
 
   Select.Option = Option;
 
+  // Code adapted from https://chatgpt.com/share/67cd2dbe-bd5c-8013-bb15-21bfbe8deba8
+  const Modal = ({ open, children }) => (
+    <div data-testid="mocked-modal">{open ? children : null}</div>
+  );
+
   return {
     ...antd,
     Select,
+    Modal,
   };
 });
 
@@ -74,15 +87,61 @@ describe("CreateProduct Component", () => {
     setShippingSpy = jest.spyOn(React, "useState");
   });
 
+  // Code adapted from https://chatgpt.com/share/67cd2dbe-bd5c-8013-bb15-21bfbe8deba8
+  test("should fetch categories and display them", async () => {
+    axios.get.mockResolvedValueOnce({
+      data: { success: true, category: [{ _id: "1", name: "Electronics" }] },
+    });
+
+    render(
+      <MemoryRouter>
+        <CreateProduct />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Electronics")).toBeInTheDocument();
+    });
+  });
+
+  // Code adapted from https://chatgpt.com/share/67cd2dbe-bd5c-8013-bb15-21bfbe8deba8
+  test("should not update categories if API response is unsuccessful", async () => {
+    axios.get.mockResolvedValueOnce({
+      data: { success: false, category: [{ _id: "1", name: "Electronics" }] },
+    });
+
+    render(
+      <MemoryRouter>
+        <CreateProduct />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Electronics")).not.toBeInTheDocument();
+    });
+  });
+
   // Code adapted from https://chatgpt.com/share/67c1abc0-16cc-8013-a538-111a09aae3c4
   test("should create a product successfully", async () => {
     axios.get.mockResolvedValueOnce({
       data: { success: true, category: [{ _id: "1", name: "Electronics" }] },
     });
 
-    axios.post.mockResolvedValueOnce({
-      data: { success: true, message: "Product Created Successfully" },
-    });
+    window.URL.createObjectURL = jest.fn(() => "mocked-image-url");
+
+    axios.post.mockResolvedValueOnce(
+      Promise.resolve({
+        data: { success: true, message: "Product Created Successfully" },
+      })
+    );
 
     render(
       <MemoryRouter>
@@ -115,6 +174,20 @@ describe("CreateProduct Component", () => {
     });
     fireEvent.change(screen.getByPlaceholderText("write a quantity"), {
       target: { value: "10" },
+    });
+
+    const file = new File(["dummy content"], "test-image.jpg", {
+      type: "image/jpeg",
+    });
+
+    const fileInput = screen.getByLabelText("Upload Photo");
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByAltText("product_photo")).toHaveAttribute(
+        "src",
+        "mocked-image-url"
+      );
     });
 
     const shippingDropdown = dropdowns[1];
@@ -262,6 +335,20 @@ describe("CreateProduct Component", () => {
     });
     fireEvent.change(screen.getByPlaceholderText("write a quantity"), {
       target: { value: "10" },
+    });
+
+    const file = new File(["dummy content"], "test-image.jpg", {
+      type: "image/jpeg",
+    });
+
+    const fileInput = screen.getByLabelText("Upload Photo");
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByAltText("product_photo")).toHaveAttribute(
+        "src",
+        "mocked-image-url"
+      );
     });
 
     const shippingDropdown = dropdowns[1];
