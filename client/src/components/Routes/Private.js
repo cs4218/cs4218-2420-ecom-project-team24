@@ -1,8 +1,8 @@
+import React from "react";
 import { useState,useEffect } from "react";
 import { useAuth } from "../../context/auth";
 import { Outlet } from "react-router-dom";
 import axios from 'axios';
-import { set } from "mongoose";
 import Spinner from "../Spinner";
 
 export default function PrivateRoute(){
@@ -11,11 +11,16 @@ export default function PrivateRoute(){
 
     useEffect(()=> {
         const authCheck = async() => {
-            const res = await axios.get("/api/v1/auth/user-auth");
-            if(res.data.ok){
-                setOk(true);
-            } else {
-                setOk(false);
+            try {
+                const res = await axios.get("/api/v1/auth/user-auth");
+                if(res.data.ok){
+                    setOk(true);
+                } else {
+                    setOk(false);
+                }
+            } catch (error) {
+                console.error("Authentication check failed:", error); // try catch block for proper error handling
+                setOk(false); 
             }
         };
         if (auth?.token) authCheck();
