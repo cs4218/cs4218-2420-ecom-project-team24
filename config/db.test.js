@@ -38,6 +38,7 @@ describe('Database Connection', () => {
     process.env = originalEnv
   })
 
+  // TEST #1
   test('should connect to the database successfully', async () => {
     // Mock successful connection
     const mockConnection = {
@@ -47,20 +48,19 @@ describe('Database Connection', () => {
     }
 
     mongoose.connect.mockResolvedValue(mockConnection)
-
-    // Call the function
     await connectDB()
 
     // Verify mongoose.connect was called with the correct URL
     expect(mongoose.connect).toHaveBeenCalledWith(process.env.MONGO_URL)
 
-    // Verify success message was logged - we don't check the exact string due to color formatting
+    // Verify success message was logged
     expect(console.log).toHaveBeenCalled()
     expect(console.log.mock.calls[0][0]).toContain(
       `Connected To Mongodb Database ${mockConnection.connection.host}`
     )
   })
 
+  // TEST #2
   test('should handle connection errors', async () => {
     // Mock connection error
     const mockError = new Error('Connection failed')
@@ -69,13 +69,14 @@ describe('Database Connection', () => {
     // Call the function
     await connectDB()
 
-    // Verify error message was logged - we don't check the exact string due to color formatting
+    // Verify error message was logged
     expect(console.log).toHaveBeenCalled()
     expect(console.log.mock.calls[0][0]).toContain(
       `Error in Mongodb ${mockError}`
     )
   })
 
+  // TEST #3
   test('should use MONGO_URL from environment variables', async () => {
     // Set a specific test URL
     const testUrl = 'mongodb://testserver:27017/testdb'
@@ -86,13 +87,13 @@ describe('Database Connection', () => {
       connection: { host: 'testserver' }
     })
 
-    // Call the function
     await connectDB()
 
     // Verify mongoose.connect was called with the correct URL
     expect(mongoose.connect).toHaveBeenCalledWith(testUrl)
   })
 
+  // TEST #4
   test('should handle missing MONGO_URL environment variable', async () => {
     // Remove MONGO_URL from environment
     delete process.env.MONGO_URL
@@ -101,7 +102,6 @@ describe('Database Connection', () => {
     const mockError = new Error('Invalid connection string')
     mongoose.connect.mockRejectedValue(mockError)
 
-    // Call the function
     await connectDB()
 
     // Verify error was logged
