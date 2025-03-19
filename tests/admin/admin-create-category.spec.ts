@@ -15,10 +15,10 @@ test("admin can create a new category", async ({ page }) => {
   await profileDropdown.click();
   await page.waitForTimeout(500);
 
-  const logoutButton = page.locator(".dropdown-menu .dropdown-item", {
+  const dashboardButton = page.locator(".dropdown-menu .dropdown-item", {
     hasText: "Dashboard",
   });
-  await logoutButton.click();
+  dashboardButton.click();
 
   await expect(page).toHaveURL("http://localhost:3000/dashboard/admin");
 
