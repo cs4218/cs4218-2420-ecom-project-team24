@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("Admin can log in successfully", async ({ page }) => {
+test("Admin cannot login with invalid credentials", async ({ page }) => {
   await page.goto("http://localhost:3000/login");
 
   // use locators api
