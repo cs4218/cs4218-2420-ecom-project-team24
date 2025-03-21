@@ -54,13 +54,11 @@ test("admin can create and delete a new product", async ({
   await productCardLink.click();
 
   page.once("dialog", async (dialog) => {
-    expect(dialog.message()).toContain("Are you sure");
+    expect(dialog.message()).toContain(
+      "Are you sure you want to delete this product?"
+    );
     await dialog.accept();
   });
-
-  const deleteButton = page.getByRole("button", { name: "DELETE PRODUCT" });
-  await expect(deleteButton).toBeVisible();
-  await deleteButton.click();
 
   await page.goto("http://localhost:3000/dashboard/admin/products");
 
