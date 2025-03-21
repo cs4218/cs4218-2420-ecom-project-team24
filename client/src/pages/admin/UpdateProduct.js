@@ -89,16 +89,28 @@ const UpdateProduct = () => {
   //delete a product
   const handleDelete = async () => {
     try {
-      let answer = window.prompt("Are You Sure want to delete this product ? ");
-      if (!answer) return;
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this product?"
+      );
+      if (!confirmed) return;
+
+      if (!id) {
+        toast.error("Product ID not found. Cannot delete.");
+        return;
+      }
+
       const { data } = await axios.delete(
         `/api/v1/product/delete-product/${id}`
       );
-      toast.success("Product Deleted Succfully");
-      navigate("/dashboard/admin/products");
+      if (data?.success) {
+        toast.success("Product deleted successfully");
+        navigate("/dashboard/admin/products");
+      } else {
+        toast.error(data?.message || "Failed to delete product");
+      }
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong");
+      toast.error("Something went wrong during deletion");
     }
   };
   return (
