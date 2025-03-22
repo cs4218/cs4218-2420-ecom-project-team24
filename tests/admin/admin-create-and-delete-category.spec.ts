@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.use({ storageState: "tests/setup/auth.json" });
 
 // code adapted from https://chatgpt.com/share/67da575f-0608-8013-8437-626ab448bed7
-test("admin can delete a category", async ({ page }) => {
+test("admin can create and delete a category", async ({ page }) => {
   await page.goto("http://localhost:3000/dashboard/admin/create-category");
 
   const categoryInput = page.locator('input[placeholder="Enter new category"]');

@@ -1,14 +1,15 @@
 module.exports = {
   // display name
-  displayName: 'backend',
-  testEnvironment: 'node',
+  displayName: "backend",
+  testEnvironment: "node",
 
   // which test to run
   testMatch: [
-    '<rootDir>/controllers/*.test.js',
-    '<rootDir>/models/*.test.js',
-    '<rootDir>/config/*.test.js'
-  ]
+    // '<rootDir>/controllers/*.test.js',
+    //'<rootDir>/models/*.test.js',
+    // '<rootDir>/config/*.test.js'
+    "<rootDir>/integration-tests/*.integration.test.js",
+  ],
 
   // jest code coverage
   //   collectCoverage: true,
@@ -20,4 +21,4 @@ module.exports = {
   //     }
   //   },
   // reporters: [['summary', { summaryThreshold: 1 }]]
-}
+};
