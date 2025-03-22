@@ -74,10 +74,12 @@ const UpdateProduct = () => {
         `/api/v1/product/update-product/${id}`,
         productData
       );
+      console.log("UPDATE RESPONSE:", data);
       if (!data?.success) {
         toast.error(data?.message);
       } else {
         toast.success("Product Updated Successfully");
+        console.log("Navigating to /dashboard/admin/products");
         navigate("/dashboard/admin/products");
       }
     } catch (error) {
