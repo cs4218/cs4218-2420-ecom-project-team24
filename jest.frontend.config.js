@@ -33,7 +33,7 @@ module.exports = {
      "<rootDir>/client/src/components/Form/*.test.js",
     '<rootDir>/client/src/context/*.test.js',
     '<rootDir>/client/src/hooks/*.test.js',
-    '<rootDir>/client/src/integration-tests/navigation-tests/*.test.js'
+    '<rootDir>/client/src/integration-tests/navigation-frontend-tests/*.test.js',
   ],
 
 
