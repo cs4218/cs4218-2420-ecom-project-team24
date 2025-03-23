@@ -104,7 +104,7 @@ describe("Homepage Navigation Tests", () => {
     fireEvent.click(screen.getByText("Cart"));
 
     await waitFor(() =>
-      expect(screen.getByText("Cart Summary")).toBeInTheDocument() // Check if Cart page content is displayed
+      expect(screen.getByText("Cart Summary")).toBeInTheDocument()
     );
   });
 

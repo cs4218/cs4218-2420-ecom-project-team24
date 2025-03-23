@@ -18,7 +18,6 @@ async function fillField(page, fieldName, value) {
   await page.getByRole('textbox', { name: new RegExp(fieldName, 'i') }).fill(value);
 }
 
-// Test to register a user
 test('Navigate to register page and register a new user', async ({ page }) => {
   // Navigate to homepage and register page
   await goToHomepage(page);
@@ -32,11 +31,9 @@ test('Navigate to register page and register a new user', async ({ page }) => {
   await fillField(page, 'phone', '99000122');
   await fillField(page, 'address', 'test');
   
-  // Fill DOB using placeholder instead of label
   await expect(page.getByPlaceholder('Enter Your DOB')).toBeVisible();
   await page.getByPlaceholder('Enter Your DOB').fill('2005-12-27');
   
-  // Fill sports field
   await fillField(page, 'Favorite sports', 'Football');
 
   // Submit the form
@@ -44,13 +41,11 @@ test('Navigate to register page and register a new user', async ({ page }) => {
 });
 
 
-// Test to login and navigate
 test('Login, navigate to Dashboard and Orders, and return to homepage', async ({ page }) => {
   // Go to homepage and check for existence of a heading
   await page.goto('http://localhost:3000/');
   await expect(page.getByRole('heading', { name: /All Products|Home/i })).toBeVisible();
 
-  // Perform login
   await page.getByRole('link', { name: /Login/i }).click();
   await page.getByRole('textbox', { name: 'Enter Your Email' }).fill('testings1@test.com');
   await page.getByRole('textbox', { name: 'Enter Your Password' }).fill('testings1@test.com');
@@ -74,12 +69,10 @@ test('Login, navigate to Dashboard and Orders, and return to homepage', async ({
   await page.getByRole('button', { name: /Tester/i }).click();
   await page.getByRole('link', { name: /Logout/i }).click();
 
-  // Verify successful logout
   await expect(page.getByRole('link', { name: /Login/i })).toBeVisible();
 });
 
 
-// Test admin panel navigation
 test('Admin Dashboard Navigation from Homepage', async ({ page }) => {
   await goToHomepage(page);
   await expect(page.getByRole('heading', { name: /All Products|Home/i })).toBeVisible();
@@ -111,7 +104,6 @@ test('Admin Dashboard Navigation from Homepage', async ({ page }) => {
 });
 
 test('Navigate from homepage to categories, select a category, and return to homepage', async ({ page }) => {
-  // Go to homepage and verify
   await page.goto('http://localhost:3000/');
   await expect(page.getByRole('heading', { name: /All Products|Home/i })).toBeVisible({ timeout: 10000 });
 
@@ -134,7 +126,6 @@ test('Navigate from homepage to categories, select a category, and return to hom
 });
 
 test('Navigate from homepage to About, Contact, Privacy Policy, and return to homepage', async ({ page }) => {
-  // Go to homepage
   await page.goto('http://localhost:3000/');
   await expect(page.getByRole('img', { name: 'bannerimage' })).toBeVisible();
 

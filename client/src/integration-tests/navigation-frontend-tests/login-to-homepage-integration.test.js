@@ -79,7 +79,6 @@ describe("Login to Homepage Integration Tests", () => {
       target: { value: "password123" },
     });
   
-    // Submit the form
     fireEvent.click(getByText("LOGIN"));
   
     // Wait for navigation to the homepage
@@ -120,7 +119,6 @@ describe("Login to Homepage Integration Tests", () => {
       target: { value: "wrongpassword" },
     });
   
-    // Submit the form
     fireEvent.click(getByText("LOGIN"));
   
     // Wait for the toast error message
@@ -157,7 +155,6 @@ describe("Login to Homepage Integration Tests", () => {
       target: { value: "password123" },
     });
   
-    // Submit the form
     fireEvent.click(getByText("LOGIN"));
   
     // Wait for the toast error message
