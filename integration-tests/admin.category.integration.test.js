@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 describe("Admin Category Flow (Integration Test)", () => {
   let token;
   let categoryId;
+  let originalCategoryName;
 
   beforeAll(async () => {
     const res = await request(app).post("/api/v1/auth/login").send({
@@ -17,19 +18,33 @@ describe("Admin Category Flow (Integration Test)", () => {
   });
 
   it("should create a category", async () => {
-    const categoryName = `Integration Category ${Date.now()}`;
+    originalCategoryName = `Integration Category ${Date.now()}`;
 
     const res = await request(app)
       .post("/api/v1/category/create-category")
       .set("Authorization", `Bearer ${token}`)
-      .send({ name: categoryName });
+      .send({ name: originalCategoryName });
 
     console.log("🚀 Create category response body:", res.body);
 
     expect(res.statusCode).toBe(201);
-    expect(res.body?.category?.name).toBe(categoryName);
+    expect(res.body?.category?.name).toBe(originalCategoryName);
 
     categoryId = res.body.category._id;
+  });
+
+  it("should update the category name", async () => {
+    const updatedName = `${originalCategoryName} Updated`;
+
+    const res = await request(app)
+      .put(`/api/v1/category/update-category/${categoryId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: updatedName });
+
+    console.log("Update category response body:", res.body);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body?.category?.name).toBe(updatedName);
   });
 
   afterAll(async () => {
