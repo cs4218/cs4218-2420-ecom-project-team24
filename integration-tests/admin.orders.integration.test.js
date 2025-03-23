@@ -2,11 +2,15 @@ import request from "supertest";
 import app from "../server.js";
 import mongoose from "mongoose";
 import User from "../models/userModel.js";
+import Product from "../models/productModel.js";
+import Order from "../models/orderModel.js";
+import Category from "../models/categoryModel.js";
 import bcrypt from "bcrypt";
-import Product from "../models/productModel.js"
+import slugify from "slugify";
 
 const hashedPassword = await bcrypt.hash("admin@test.com", 10);
 
+// code adapted from https://chatgpt.com/share/67df0798-33d4-8013-b7f0-3915a1021025
 describe("Admin Orders Flow (Integration Test)", () => {
   let token;
   let orderId;
@@ -33,12 +37,17 @@ describe("Admin Orders Flow (Integration Test)", () => {
     token = res.body?.token;
     if (!token) throw new Error("Login failed - no token received");
 
-    // Create a test product (mocked for order)
+    const testCategory = await Category.create({
+      name: "Test Category",
+      slug: slugify("Test Category"),
+    });
+
     testProduct = await Product.create({
       name: "Test Product",
+      slug: slugify("Test Product"),
       description: "Test product description",
       price: 100,
-      category: "Test Category",
+      category: testCategory._id,
       quantity: 1,
       shipping: true,
       photo: {
@@ -47,7 +56,6 @@ describe("Admin Orders Flow (Integration Test)", () => {
       },
     });
 
-    // Create test order
     const order = await Order.create({
       products: [testProduct],
       payment: {
@@ -66,11 +74,11 @@ describe("Admin Orders Flow (Integration Test)", () => {
       .get("/api/v1/auth/all-orders")
       .set("Authorization", `Bearer ${token}`);
 
+    console.log("GET /all-orders response body:", res.body);
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body.length).toBeGreaterThan(0);
-
-    orderId = res.body[0]._id;
+    expect(res.body[0]._id).toBe(orderId.toString());
   });
 
   it("should update the order status", async () => {
