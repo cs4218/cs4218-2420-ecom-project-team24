@@ -3,19 +3,35 @@ import app from "../server.js";
 import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
+import User from "../models/userModel.js";
+import bcrypt from "bcrypt";
+
+const hashedPassword = await bcrypt.hash("admin@test.com", 10);
 
 // code adapted from https://chatgpt.com/share/67df0798-33d4-8013-b7f0-3915a1021025
-describe("Admin Product Flow (Integration Test)", () => {
+describe("Admin Category Flow (Integration Test)", () => {
   let token;
   let productId;
   let originalProductName = `Integration Product ${Date.now()}`;
   let updatedProductName = `${originalProductName} Updated`;
 
   beforeAll(async () => {
-    const res = await request(app).post("/api/v1/auth/login").send({
-      email: "cs4218@test.com",
-      password: "cs4218@test.com",
+    await User.create({
+      name: "Test Admin",
+      email: "admin@test.com",
+      password: hashedPassword,
+      phone: "1234567890",
+      address: "123 Admin Street",
+      answer: "football",
+      role: 1,
     });
+
+    // Login with test credentials
+    const res = await request(app).post("/api/v1/auth/login").send({
+      email: "admin@test.com",
+      password: "admin@test.com",
+    });
+
     token = res.body?.token;
     if (!token) throw new Error("Login failed - no token received");
   });

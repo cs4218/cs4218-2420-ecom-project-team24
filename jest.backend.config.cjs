@@ -8,8 +8,12 @@ module.exports = {
     // '<rootDir>/controllers/*.test.js',
     //'<rootDir>/models/*.test.js',
     // '<rootDir>/config/*.test.js'
-   //  "<rootDir>/integration-tests/*.integration.test.js",
+    //  "<rootDir>/integration-tests/*.integration.test.js",
+    "<rootDir>/integration-tests/*.integration.test.js",
   ],
+
+  globalSetup: "<rootDir>/integration-tests/globalSetup.js",
+  globalTeardown: "<rootDir>/integration-tests/globalTeardown.js",
 
   // jest code coverage
   //   collectCoverage: true,
