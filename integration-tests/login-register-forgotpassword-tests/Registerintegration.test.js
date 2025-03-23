@@ -3,9 +3,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import authRoutes from '../routes/authRoute';
-import userModel from '../models/userModel';
-import { registerController } from '../controllers/authController';
+import authRoutes from '../../routes/authRoute';
+import userModel from '../../models/userModel';
+import { registerController } from '../../controllers/authController';
 
 // Set up Express server
 const app = express();

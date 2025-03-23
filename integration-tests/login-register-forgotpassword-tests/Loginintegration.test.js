@@ -3,9 +3,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import authRoutes from '../routes/authRoute';
-import userModel from '../models/userModel';
-import { comparePassword, hashPassword } from '../helpers/authHelper';
+import authRoutes from '../../routes/authRoute';
+import userModel from '../../models/userModel';
+import { comparePassword, hashPassword } from '../../helpers/authHelper';
 import dotenv from 'dotenv';
 
 dotenv.config();
