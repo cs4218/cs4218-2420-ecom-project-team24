@@ -35,7 +35,7 @@ module.exports = {
   // jest code coverage
   collectCoverage: true,
   collectCoverageFrom: [
-    "client/src/components/Form/*.js",
+    // "client/src/components/Form/*.js",
     //     'client/src/pages/**/*.js',
     //     '!client/src/pages/Auth/**/*.test.js',
     //     '!client/src/pages/**/*.test.js'
