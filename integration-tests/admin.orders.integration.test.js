@@ -20,7 +20,7 @@ describe("Admin Orders Flow (Integration Test)", () => {
   beforeAll(async () => {
     let admin = await User.create({
       name: "Test Admin",
-      email: "admin@test.com",
+      email: "admin2@test.com",
       password: hashedPassword,
       phone: "1234567890",
       address: "123 Admin Street",
@@ -30,7 +30,7 @@ describe("Admin Orders Flow (Integration Test)", () => {
     adminId = admin._id;
 
     const res = await request(app).post("/api/v1/auth/login").send({
-      email: "admin@test.com",
+      email: "admin2@test.com",
       password: "admin@test.com",
     });
 

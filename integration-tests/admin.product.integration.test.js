@@ -18,7 +18,7 @@ describe("Admin Product Flow (Integration Test)", () => {
   beforeAll(async () => {
     await User.create({
       name: "Test Admin",
-      email: "admin@test.com",
+      email: "admin1@test.com",
       password: hashedPassword,
       phone: "1234567890",
       address: "123 Admin Street",
@@ -28,7 +28,7 @@ describe("Admin Product Flow (Integration Test)", () => {
 
     // Login with test credentials
     const res = await request(app).post("/api/v1/auth/login").send({
-      email: "admin@test.com",
+      email: "admin1@test.com",
       password: "admin@test.com",
     });
 
