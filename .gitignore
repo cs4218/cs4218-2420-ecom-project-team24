@@ -1,15 +1,4 @@
 node_modules
-<<<<<<< HEAD
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/coverage/
-/.env
-/client/.env
-/sonar-project.properties
-.env
-=======
 test-results
 playwright-report
 blob-report
@@ -18,4 +7,3 @@ coverage
 # .env
 # client/.env
 sonar-project.properties
->>>>>>> 3ee40896188b26fdca971f6b05a12a8b39563d1b
