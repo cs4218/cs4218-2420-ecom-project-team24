@@ -29,7 +29,8 @@ module.exports = {
     '<rootDir>/client/src/components/*.test.js',
      "<rootDir>/client/src/components/Form/*.test.js",
     '<rootDir>/client/src/context/*.test.js',
-    '<rootDir>/client/src/hooks/*.test.js'
+    '<rootDir>/client/src/hooks/*.test.js',
+    '<rootDir>/client/src/integration-tests/*.test.js',
   ],
 
 
