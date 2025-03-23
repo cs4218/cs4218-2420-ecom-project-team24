@@ -5,11 +5,10 @@ module.exports = {
 
   // which test to run
   testMatch: [
-    // '<rootDir>/controllers/*.test.js',
-    //'<rootDir>/models/*.test.js',
-    // '<rootDir>/config/*.test.js'
-    //  "<rootDir>/integration-tests/*.integration.test.js",
-    "<rootDir>/integration-tests/*.integration.test.js",
+    "<rootDir>/controllers/*.test.js",
+    "<rootDir>/models/*.test.js",
+    "<rootDir>/config/*.test.js",
+    "<rootDir>/integration-tests/**/*.test.js",
   ],
 
   globalSetup: "<rootDir>/integration-tests/globalSetup.js",
