@@ -8,7 +8,7 @@ module.exports = {
     '<rootDir>/controllers/*.test.js',
     '<rootDir>/models/*.test.js',
     '<rootDir>/config/*.test.js',
-    '<rootDir>/integration-tests/*.test.js',
+    '<rootDir>/integration-tests/**/*.test.js',
   ]
 
   // jest code coverage
