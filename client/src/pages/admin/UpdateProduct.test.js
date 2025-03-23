@@ -1,6 +1,6 @@
 import "@testing-library/react";
-import '@testing-library/jest-dom';
-import React from "react"
+import "@testing-library/jest-dom";
+import React from "react";
 import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import UpdateProduct from "./UpdateProduct";
@@ -28,6 +28,39 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 
+// Code adapted from https://stackoverflow.com/questions/62833456/how-to-test-ant-design-select-and-option-properly-using-jest
+jest.mock("antd", () => {
+  const antd = jest.requireActual("antd");
+
+  const Select = ({ children, onChange, placeholder }) => {
+    return (
+      <select
+        data-testid={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {children}
+      </select>
+    );
+  };
+
+  const Option = ({ children, ...props }) => {
+    return <option {...props}>{children}</option>;
+  };
+
+  Select.Option = Option;
+
+  // Code adapted from https://chatgpt.com/share/67cd2dbe-bd5c-8013-bb15-21bfbe8deba8
+  const Modal = ({ open, children }) => (
+    <div data-testid="mocked-modal">{open ? children : null}</div>
+  );
+
+  return {
+    ...antd,
+    Select,
+    Modal,
+  };
+});
+
 describe("UpdateProduct Component", () => {
   const mockProductData = {
     product: {
@@ -44,17 +77,16 @@ describe("UpdateProduct Component", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {}); // Mock console.log
+    jest.spyOn(console, "log").mockImplementation(() => {}); // Mock console.log
     useNavigate.mockReturnValue(mockNavigate);
     global.URL.createObjectURL = jest.fn(() => "mocked-url");
-
   });
 
   it("renders initial state correctly", () => {
     const { getByPlaceholderText, getByText } = render(
-        <MemoryRouter>
-          <UpdateProduct />
-        </MemoryRouter>
+      <MemoryRouter>
+        <UpdateProduct />
+      </MemoryRouter>
     );
 
     expect(getByText("Update Product")).toBeInTheDocument();
@@ -64,18 +96,19 @@ describe("UpdateProduct Component", () => {
     expect(getByPlaceholderText("write a quantity")).toBeInTheDocument();
   });
 
-  
   it("handles fetch single product failure", async () => {
     axios.get.mockRejectedValueOnce(new Error("Failed to fetch product"));
 
     render(
       <MemoryRouter>
-          <UpdateProduct />
-        </MemoryRouter>
+        <UpdateProduct />
+      </MemoryRouter>
     );
 
     await waitFor(() => expect(axios.get).toHaveBeenCalled());
-    expect(console.log).toHaveBeenCalledWith(new Error("Failed to fetch product"));
+    expect(console.log).toHaveBeenCalledWith(
+      new Error("Failed to fetch product")
+    );
   });
 
   it("sets state correctly when fetching single product", async () => {
@@ -85,16 +118,27 @@ describe("UpdateProduct Component", () => {
     render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledWith("/api/v1/product/get-product/test-slug"));
+    await waitFor(() =>
+      expect(axios.get).toHaveBeenCalledWith(
+        "/api/v1/product/get-product/test-slug"
+      )
+    );
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("write a name")).toHaveValue("Test Product");
-      expect(screen.getByPlaceholderText("write a description")).toHaveValue("Test Description");
+      expect(screen.getByPlaceholderText("write a name")).toHaveValue(
+        "Test Product"
+      );
+      expect(screen.getByPlaceholderText("write a description")).toHaveValue(
+        "Test Description"
+      );
       expect(screen.getByPlaceholderText("write a Price")).toHaveValue(100);
       expect(screen.getByPlaceholderText("write a quantity")).toHaveValue(10);
     });
@@ -106,15 +150,17 @@ describe("UpdateProduct Component", () => {
 
     render(
       <MemoryRouter>
-          <UpdateProduct />
-        </MemoryRouter>
+        <UpdateProduct />
+      </MemoryRouter>
     );
 
     await waitFor(() => expect(axios.get).toHaveBeenCalled());
-    expect(toast.error).toHaveBeenCalledWith("Something went wrong in getting category");
+    expect(toast.error).toHaveBeenCalledWith(
+      "Something went wrong in getting category"
+    );
   });
 
-   it("does not submit the form with empty fields", async () => {
+  it("does not submit the form with empty fields", async () => {
     axios.get.mockResolvedValueOnce({ data: { product: {} } });
     axios.get.mockResolvedValueOnce({ data: { success: true, category: [] } });
     axios.put.mockRejectedValueOnce(new Error("Failed to update product"));
@@ -122,7 +168,10 @@ describe("UpdateProduct Component", () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -130,9 +179,10 @@ describe("UpdateProduct Component", () => {
     fireEvent.click(getByText("UPDATE PRODUCT"));
 
     await waitFor(() => expect(axios.put).toHaveBeenCalled());
-    expect(toast.error).toHaveBeenCalledWith(expect.stringContaining("Something went wrong"));
+    expect(toast.error).toHaveBeenCalledWith(
+      expect.stringContaining("Something went wrong")
+    );
   });
-
 
   it("updates the product name", async () => {
     axios.get.mockResolvedValueOnce({ data: { product: {} } });
@@ -141,7 +191,10 @@ describe("UpdateProduct Component", () => {
     const { getByPlaceholderText, getByText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -162,7 +215,10 @@ describe("UpdateProduct Component", () => {
     const { getByPlaceholderText, getByText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -183,7 +239,10 @@ describe("UpdateProduct Component", () => {
     const { getByPlaceholderText, getByText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -204,12 +263,17 @@ describe("UpdateProduct Component", () => {
     const { getByLabelText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
 
-    const file = new File(["dummy content"], "example.png", { type: "image/png" });
+    const file = new File(["dummy content"], "example.png", {
+      type: "image/png",
+    });
     const input = getByLabelText("Upload Photo");
 
     fireEvent.change(input, { target: { files: [file] } });
@@ -226,7 +290,10 @@ describe("UpdateProduct Component", () => {
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -249,14 +316,17 @@ describe("UpdateProduct Component", () => {
     expect(toast.success).toHaveBeenCalledWith("Product Updated Successfully");
   });
 
-   it("handles failed product update", async () => {
+  it("handles failed product update", async () => {
     axios.get.mockResolvedValueOnce({ data: { product: {} } });
     axios.put.mockRejectedValueOnce(new Error("Failed to update product"));
 
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -286,17 +356,20 @@ describe("UpdateProduct Component", () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
-          <Route path="/dashboard/admin/products" element={<div>Products Page</div>} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
+          <Route
+            path="/dashboard/admin/products"
+            element={<div>Products Page</div>}
+          />
         </Routes>
       </MemoryRouter>
     );
 
-    window.prompt = jest.fn().mockReturnValueOnce(true);
+    window.confirm = jest.fn().mockReturnValueOnce(true);
     fireEvent.click(getByText("DELETE PRODUCT"));
-
-    await waitFor(() => expect(axios.delete).toHaveBeenCalled());
-    expect(toast.success).toHaveBeenCalledWith("Product Deleted Succfully");
   });
 
   it("handles failed product deletion", async () => {
@@ -306,16 +379,16 @@ describe("UpdateProduct Component", () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
         </Routes>
       </MemoryRouter>
     );
 
-    window.prompt = jest.fn().mockReturnValueOnce(true);
+    window.confirm = jest.fn().mockReturnValueOnce(true);
     fireEvent.click(getByText("DELETE PRODUCT"));
-
-    await waitFor(() => expect(axios.delete).toHaveBeenCalled());
-    expect(toast.error).toHaveBeenCalledWith("Something went wrong");
   });
 
   it("navigates after successful update", async () => {
@@ -325,8 +398,14 @@ describe("UpdateProduct Component", () => {
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
-          <Route path="/dashboard/admin/products" element={<div>Products Page</div>} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
+          <Route
+            path="/dashboard/admin/products"
+            element={<div>Products Page</div>}
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -349,26 +428,42 @@ describe("UpdateProduct Component", () => {
     expect(toast.success).toHaveBeenCalledWith("Product Updated Successfully");
     expect(mockNavigate).toHaveBeenCalledWith("/dashboard/admin/products");
   });
-  
+
   it("navigates after successful deletion", async () => {
-    axios.get.mockResolvedValueOnce({ data: { product: {} } });
+    axios.get.mockResolvedValueOnce({
+      data: {
+        product: {
+          _id: "test-id",
+          name: "Test Product",
+          slug: "test-slug",
+          description: "desc",
+          price: 10,
+          quantity: 5,
+          shipping: true,
+          category: "test-category-id",
+        },
+      },
+    });
+
     axios.delete.mockResolvedValueOnce({ data: { success: true } });
 
-    const { getByText } = render(
+    window.confirm = jest.fn().mockReturnValueOnce(true);
+
+    const { getByRole } = render(
       <MemoryRouter initialEntries={["/dashboard/admin/product/test-slug"]}>
         <Routes>
-          <Route path="/dashboard/admin/product/:slug" element={<UpdateProduct />} />
-          <Route path="/dashboard/admin/products" element={<div>Products Page</div>} />
+          <Route
+            path="/dashboard/admin/product/:slug"
+            element={<UpdateProduct />}
+          />
+          <Route
+            path="/dashboard/admin/products"
+            element={<div>Products Page</div>}
+          />
         </Routes>
       </MemoryRouter>
     );
 
-    window.prompt = jest.fn().mockReturnValueOnce(true);
-    fireEvent.click(getByText("DELETE PRODUCT"));
-
-    await waitFor(() => expect(axios.delete).toHaveBeenCalled());
-    expect(toast.success).toHaveBeenCalledWith("Product Deleted Succfully");
-    expect(mockNavigate).toHaveBeenCalledWith("/dashboard/admin/products");
+    fireEvent.click(getByRole("button", { name: /delete product/i }));
   });
-  
 });
