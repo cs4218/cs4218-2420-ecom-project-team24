@@ -34,6 +34,7 @@ module.exports = {
     '<rootDir>/client/src/context/*.test.js',
     '<rootDir>/client/src/hooks/*.test.js',
     '<rootDir>/client/src/integration-tests/navigation-frontend-tests/*.test.js',
+    '<rootDir>/client/src/integration-tests/**/*.test.js',
   ],
 
 
