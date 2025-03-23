@@ -4,8 +4,6 @@ import mongoose from "mongoose";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
-const hashedPassword = await bcrypt.hash("admin@test.com", 10);
-
 // code adapted from https://chatgpt.com/share/67df0798-33d4-8013-b7f0-3915a1021025
 describe("Admin Category Flow (Integration Test)", () => {
   let token;
@@ -13,6 +11,7 @@ describe("Admin Category Flow (Integration Test)", () => {
   let originalCategoryName;
 
   beforeAll(async () => {
+    const hashedPassword = await bcrypt.hash("admin@test.com", 10);
     await User.create({
       name: "Test Admin",
       email: "admin3@test.com",

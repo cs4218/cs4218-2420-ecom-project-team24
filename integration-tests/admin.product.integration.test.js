@@ -6,8 +6,6 @@ import path from "path";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
-const hashedPassword = await bcrypt.hash("admin@test.com", 10);
-
 // code adapted from https://chatgpt.com/share/67df0798-33d4-8013-b7f0-3915a1021025
 describe("Admin Product Flow (Integration Test)", () => {
   let token;
@@ -16,6 +14,7 @@ describe("Admin Product Flow (Integration Test)", () => {
   let updatedProductName = `${originalProductName} Updated`;
 
   beforeAll(async () => {
+    const hashedPassword = await bcrypt.hash("admin@test.com", 10);
     await User.create({
       name: "Test Admin",
       email: "admin1@test.com",

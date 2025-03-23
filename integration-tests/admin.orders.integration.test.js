@@ -8,8 +8,6 @@ import Category from "../models/categoryModel.js";
 import bcrypt from "bcrypt";
 import slugify from "slugify";
 
-const hashedPassword = await bcrypt.hash("admin@test.com", 10);
-
 // code adapted from https://chatgpt.com/share/67df0798-33d4-8013-b7f0-3915a1021025
 describe("Admin Orders Flow (Integration Test)", () => {
   let token;
@@ -18,6 +16,7 @@ describe("Admin Orders Flow (Integration Test)", () => {
   let testProduct;
 
   beforeAll(async () => {
+    const hashedPassword = await bcrypt.hash("admin@test.com", 10);
     let admin = await User.create({
       name: "Test Admin",
       email: "admin2@test.com",
