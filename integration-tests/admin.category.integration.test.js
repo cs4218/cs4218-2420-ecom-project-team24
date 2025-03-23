@@ -47,6 +47,38 @@ describe("Admin Category Flow (Integration Test)", () => {
     expect(res.body?.category?.name).toBe(updatedName);
   });
 
+  it("should fetch the category list and find the new category", async () => {
+    const updatedName = `${originalCategoryName} Updated`;
+    const res = await request(app)
+      .get("/api/v1/category/get-category")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+    console.log("🧾 get-category response:", res.body);
+    const names = res.body.category.map((c) => c.name);
+    expect(names).toContain(updatedName);
+  });
+
+  it("should delete the category", async () => {
+    const res = await request(app)
+      .delete(`/api/v1/category/delete-category/${categoryId}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("should fetch the category list and not show the deleted category", async () => {
+    const getRes = await request(app)
+      .get("/api/v1/category/get-category")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(getRes.statusCode).toBe(200);
+    const names = getRes.body.category.map((c) => c.name);
+
+    const deletedName = `${originalCategoryName} Updated`;
+    expect(names).not.toContain(deletedName);
+  });
+
   afterAll(async () => {
     await mongoose.disconnect();
   }, 20000);
