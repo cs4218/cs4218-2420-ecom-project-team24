@@ -6,6 +6,9 @@ module.exports = {
   // e.g., using document.querySelector in your tests
   testEnvironment: "jest-environment-jsdom",
 
+  // Jest setup file
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+
   // jest does not recognise jsx files by default, so we use babel to transform any jsx files
   transform: {
     "^.+\\.jsx?$": "babel-jest",
@@ -22,6 +25,7 @@ module.exports = {
   // only run these tests
   testMatch: [
     // '<rootDir>/client/src/pages/Auth/*.test.js',
+<<<<<<< HEAD:jest.frontend.config.cjs
     "<rootDir>/client/src/pages/Auth/*.test.js",
     "<rootDir>/client/src/pages/admin/*.test.js",
     "<rootDir>/client/src/pages/user/*.test.js",
@@ -31,6 +35,18 @@ module.exports = {
     "<rootDir>/client/src/context/*.test.js",
     "<rootDir>/client/src/hooks/*.test.js",
     "<rootDir>/client/src/integration-tests/**/*.test.js",
+=======
+    '<rootDir>/client/src/pages/Auth/*.test.js',
+    '<rootDir>/client/src/pages/admin/*.test.js',
+    '<rootDir>/client/src/pages/user/*.test.js',
+    '<rootDir>/client/src/pages/*.test.js',
+    '<rootDir>/client/src/components/*.test.js',
+     "<rootDir>/client/src/components/Form/*.test.js",
+    '<rootDir>/client/src/context/*.test.js',
+    '<rootDir>/client/src/hooks/*.test.js',
+    '<rootDir>/client/src/integration-tests/navigation-frontend-tests/*.test.js',
+    '<rootDir>/client/src/integration-tests/**/*.test.js',
+>>>>>>> 86c3f893c664bf4e9e06a17d337faea49e7b4d07:jest.frontend.config.js
   ],
 
   // jest code coverage
