@@ -6,7 +6,7 @@ dotenv.config();
 
 test.describe('Registration Tests', () => {
   test('successful registration', async ({ page }) => {
-    const userModel = await import('../models/userModel.js');
+    const userModel = await import('../../models/userModel.js');
 
     await page.goto('http://localhost:3000/register');
     await page.getByRole('textbox', { name: 'Enter Your Name' }).click();
