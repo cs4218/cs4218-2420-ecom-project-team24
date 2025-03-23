@@ -1,0 +1,63 @@
+
+> ecom@1.0.0 test
+> npm run test:frontend & npm run test:backend
+
+
+> ecom@1.0.0 test:backend
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.backend.config.cjs
+
+
+> ecom@1.0.0 test:frontend
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.frontend.config.cjs
+
+🚀 In-memory MongoDB started for integration tests: mongodb://127.0.0.1:62053/
+[0mPOST /api/v1/auth/login [32m200[0m 65.642 ms - 376[0m
+🧹 In-memory MongoDB stopped after tests.
+---------------------|---------|----------|---------|---------|-----------------------
+File                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s     
+---------------------|---------|----------|---------|---------|-----------------------
+All files            |   97.08 |    92.66 |   96.95 |   96.98 |                       
+ components          |     100 |      100 |     100 |     100 |                       
+  AdminMenu.js       |     100 |      100 |     100 |     100 |                       
+  Footer.js          |     100 |      100 |     100 |     100 |                       
+  Header.js          |     100 |      100 |     100 |     100 |                       
+  Layout.js          |     100 |      100 |     100 |     100 |                       
+  Prices.js          |     100 |      100 |     100 |     100 |                       
+  Spinner.js         |     100 |      100 |     100 |     100 |                       
+  UserMenu.js        |     100 |      100 |     100 |     100 |                       
+ components/Form     |     100 |      100 |     100 |     100 |                       
+  CategoryForm.js    |     100 |      100 |     100 |     100 |                       
+  SearchInput.js     |     100 |      100 |     100 |     100 |                       
+ context             |     100 |      100 |     100 |     100 |                       
+  auth.js            |     100 |      100 |     100 |     100 |                       
+  cart.js            |     100 |      100 |     100 |     100 |                       
+  search.js          |     100 |      100 |     100 |     100 |                       
+ hooks               |     100 |      100 |     100 |     100 |                       
+  useCategory.js     |     100 |      100 |     100 |     100 |                       
+ pages               |   98.32 |    95.91 |   98.14 |   98.25 |                       
+  About.js           |     100 |      100 |     100 |     100 |                       
+  CartPage.js        |   93.87 |      100 |   92.85 |   93.75 | 32,44,142             
+  Categories.js      |     100 |      100 |     100 |     100 |                       
+  CategoryProduct.js |     100 |      100 |     100 |     100 |                       
+  Contact.js         |     100 |      100 |     100 |     100 |                       
+  HomePage.js        |     100 |    89.47 |     100 |     100 | 27,90                 
+  Pagenotfound.js    |     100 |      100 |     100 |     100 |                       
+  Policy.js          |     100 |      100 |     100 |     100 |                       
+  ProductDetails.js  |     100 |      100 |     100 |     100 |                       
+  Search.js          |     100 |      100 |     100 |     100 |                       
+ pages/Auth          |     100 |      100 |     100 |     100 |                       
+  Login.js           |     100 |      100 |     100 |     100 |                       
+  Register.js        |     100 |      100 |     100 |     100 |                       
+ pages/admin         |   93.85 |    78.57 |   94.44 |    93.8 |                       
+  AdminDashboard.js  |     100 |      100 |     100 |     100 |                       
+  AdminOrders.js     |     100 |      100 |     100 |     100 |                       
+  CreateCategory.js  |     100 |      100 |     100 |     100 |                       
+  CreateProduct.js   |     100 |      100 |     100 |     100 |                       
+  Products.js        |     100 |      100 |     100 |     100 |                       
+  UpdateProduct.js   |   82.05 |       55 |      80 |   81.81 | 79,99-115,135-140,223 
+  Users.js           |     100 |      100 |     100 |     100 |                       
+ pages/user          |    98.7 |      100 |   92.85 |   98.61 |                       
+  Dashboard.js       |     100 |      100 |     100 |     100 |                       
+  Orders.js          |     100 |      100 |     100 |     100 |                       
+  Profile.js         |   98.33 |      100 |    87.5 |   98.21 | 113                   
+---------------------|---------|----------|---------|---------|-----------------------

@@ -12,7 +12,6 @@ import userModel from "../models/userModel.js";
 import orderModel from "../models/orderModel.js";
 import { hashPassword, comparePassword } from "../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
-import { jest } from "@jest/globals";
 
 jest.mock("../models/userModel");
 jest.mock("../models/orderModel");
