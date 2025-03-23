@@ -9,7 +9,7 @@ import bcrypt from "bcrypt";
 const hashedPassword = await bcrypt.hash("admin@test.com", 10);
 
 // code adapted from https://chatgpt.com/share/67df0798-33d4-8013-b7f0-3915a1021025
-describe("Admin Category Flow (Integration Test)", () => {
+describe("Admin Product Flow (Integration Test)", () => {
   let token;
   let productId;
   let originalProductName = `Integration Product ${Date.now()}`;
