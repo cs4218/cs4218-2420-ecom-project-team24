@@ -9,6 +9,7 @@ module.exports = {
     '<rootDir>/models/*.test.js',
     '<rootDir>/config/*.test.js',
     '<rootDir>/integration-tests/navigation-backend-tests/*.test.js',
+    '<rootDir>/integration-tests/**/*.test.js',
   ]
 
   // jest code coverage
