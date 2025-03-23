@@ -4,6 +4,6 @@ playwright-report
 blob-report
 playwright
 coverage
-.env
-client/.env
+# .env
+# client/.env
 sonar-project.properties
