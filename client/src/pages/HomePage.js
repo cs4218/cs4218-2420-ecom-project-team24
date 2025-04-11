@@ -87,11 +87,15 @@ const HomePage = () => {
     setChecked(all);
   };
   useEffect(() => {
-    if (!checked.length || !radio.length) getAllProducts();
-  }, [checked.length, radio.length]);
+    const timeout = setTimeout(() => {
+      if (!checked.length && !radio.length) {
+        getAllProducts();
+      } else {
+        filterProduct();
+      }
+    }, 100);
 
-  useEffect(() => {
-    if (checked.length || radio.length) filterProduct();
+    return () => clearTimeout(timeout);
   }, [checked, radio]);
 
   //get filterd product
@@ -158,6 +162,7 @@ const HomePage = () => {
                   src={`/api/v1/product/product-photo/${p._id}`}
                   className="card-img-top"
                   alt={p.name}
+                  loading="lazy"
                 />
                 <div className="card-body">
                   <div className="card-name-price">
