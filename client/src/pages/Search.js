@@ -3,7 +3,6 @@ import Layout from "./../components/Layout";
 import { useSearch } from "../context/search";
 const Search = () => {
   const [values, setValues] = useSearch();
-  console.log(values);
   return (
     <Layout title={"Search results"}>
       <div className="container">
