@@ -29,7 +29,8 @@ describe('Database Connection', () => {
     // Mock process.env
     process.env = {
       ...originalEnv,
-      MONGO_URL: 'mongodb://localhost:27017/test'
+      MONGO_URL:
+        'mongodb+srv://ezratio15195:LYw8ZTW6ZL6qeBDr@cs4218.rdlbv.mongodb.net/'
     }
   })
 
